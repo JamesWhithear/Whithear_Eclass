@@ -60,8 +60,8 @@
         const headerCells = rows[0].split(',');
         let headerRow = tableHeader.insertRow();
         headerCells.forEach((cell, index) => {
-          // Skip the "Visible" and "Mini Lesson Link" columns (indexes 7 and 8)
-          if (index !== 7 && index !== 8) {
+          // Skip columns 3 (index 2) and 9 (index 8)
+          if (index !== 2 && index !== 8) {
             let newHeaderCell = headerRow.insertCell();
             newHeaderCell.textContent = cell || ''; // Populate each header cell
           }
@@ -79,8 +79,8 @@
                 let colIndex = 0;
                 
                 for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-                  // Skip the "Visible" and "Mini Lesson Link" columns (indexes 7 and 8)
-                  if (i !== 7 && i !== 8) {
+                  // Skip columns 3 (index 2) and 9 (index 8)
+                  if (i !== 2 && i !== 8) {
                     let newCell = newRow.insertCell();
                     if (i === 7) {  // Column 8 (index 7) - Make it a link
                       const link = document.createElement('a');
