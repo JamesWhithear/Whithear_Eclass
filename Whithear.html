@@ -75,7 +75,17 @@
                 let newRow = tableBody.insertRow();
                 for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
                   let newCell = newRow.insertCell();
-                  newCell.textContent = cells[i] || ''; // Populate each cell
+                  if (i === 7) {  // Column 8 (index 7)
+                    // Create a link with the text from column 8 and the link from column 9
+                    const link = document.createElement('a');
+                    link.href = cells[8] || '#';  // Column 9 (index 8) as the link
+                    link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
+                    newCell.appendChild(link);  // Append the link to the cell
+                  } else if (i === 8) {  // Skip Column 9 as it's already used for the link
+                    continue;
+                  } else {
+                    newCell.textContent = cells[i] || ''; // Populate each other cell
+                  }
                 }
               }
             }
