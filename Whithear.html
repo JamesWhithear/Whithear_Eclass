@@ -33,11 +33,20 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
+    // Get the Class_Seperator parameter from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const classSeperator = urlParams.get('Class_Seperator');
+    
+    if (!classSeperator) {
+      console.error("No Class_Seperator parameter in URL.");
+      return;
+    }
+
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
     
     // Using a CORS proxy to bypass CORS restriction
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const finalUrl = proxyUrl + url;
+    const finalUrl = proxyUrl + sheetUrl;
 
     fetch(finalUrl)
       .then(response => response.text())
@@ -59,12 +68,15 @@
         rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
           const cells = row.split(',');
           if (cells.length > 1) {
-            // Check if column C is "Yes" (index 2)
-            if (cells[2] === "Yes") {
-              let newRow = tableBody.insertRow();
-              for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-                let newCell = newRow.insertCell();
-                newCell.textContent = cells[i] || ''; // Populate each cell
+            // Check if the value in the first column matches the Class_Seperator parameter
+            if (cells[0] === classSeperator) {
+              // Check if column C is "Yes" (index 2)
+              if (cells[2] === "Yes") {
+                let newRow = tableBody.insertRow();
+                for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
+                  let newCell = newRow.insertCell();
+                  newCell.textContent = cells[i] || ''; // Populate each cell
+                }
               }
             }
           }
