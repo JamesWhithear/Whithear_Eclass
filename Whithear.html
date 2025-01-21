@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content</title>
+  <title>Google Sheets Data</title>
   <style>
     table {
       width: 100%;
@@ -26,7 +26,7 @@
 </head>
 <body>
 
-<h2>Content</h2>
+<h2>Google Sheets Data</h2>
 
 <table id="dataTable">
   <thead>
@@ -39,16 +39,22 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Get the Class_Seperator parameter from the URL
+    // Get the URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const classSeperator = urlParams.get('Class_Seperator');
+    const sheetId = urlParams.get('SheetID');
+    const bColor = urlParams.get('B_Color');
     
-    if (!classSeperator) {
-      console.error("No Class_Seperator parameter in URL.");
+    if (!classSeperator || !sheetId || !bColor) {
+      console.error("Missing URL parameters.");
       return;
     }
 
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
+    // Set the background color using the B_Color parameter
+    document.body.style.backgroundColor = bColor;
+
+    // Construct the Google Sheets URL using the SheetID parameter
+    const sheetUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv`;
     
     // Using a CORS proxy to bypass CORS restriction
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -66,7 +72,7 @@
         const headerCells = rows[0].split(',');
         let headerRow = tableHeader.insertRow();
         headerCells.forEach((cell, index) => {
-          // Skip columns 3 (index 2) and 9 (index 8) and the first column (index 0)
+          // Skip columns 3 (index 2), 9 (index 8), and 1 (index 0) - the first column
           if (index !== 0 && index !== 2 && index !== 8) {
             let newHeaderCell = headerRow.insertCell();
             newHeaderCell.textContent = cell || ''; // Populate each header cell
