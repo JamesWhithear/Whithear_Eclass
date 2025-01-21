@@ -63,10 +63,13 @@
         rows.forEach(row => {
           const cells = row.split(',');
           if (cells.length > 1) {
-            let newRow = tableBody.insertRow();
-            for (let i = 0; i < 12; i++) {
-              let newCell = newRow.insertCell();
-              newCell.textContent = cells[i] || ''; // Populate each cell
+            // Check if column C is "Yes" (index 2)
+            if (cells[2] === "Yes") {
+              let newRow = tableBody.insertRow();
+              for (let i = 0; i < 12; i++) {
+                let newCell = newRow.insertCell();
+                newCell.textContent = cells[i] || ''; // Populate each cell
+              }
             }
           }
         });
