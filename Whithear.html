@@ -37,10 +37,19 @@
     const urlParams = new URLSearchParams(window.location.search);
     const classSeperator = urlParams.get('Class_Seperator');
     const backColor = urlParams.get('Back_Color');
+    const tableHeaderColor = urlParams.get('Table_Header');
 
-    // Apply background color if valid hex code is provided
+    // Apply background color if valid hex code is provided for the body
     if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
       document.body.style.backgroundColor = backColor;
+    }
+
+    // Apply table header color if valid hex code is provided
+    if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+      const thElements = document.querySelectorAll('th');
+      thElements.forEach(th => {
+        th.style.backgroundColor = tableHeaderColor;
+      });
     }
 
     if (!classSeperator) {
