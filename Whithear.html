@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Sheets Data</title>
+  <title>Content</title>
   <style>
     table {
       width: 100%;
@@ -16,11 +16,17 @@
       padding: 8px;
       text-align: left;
     }
+    .expandable-row {
+      display: none; /* Start with the expandable rows hidden */
+    }
+    .expanded {
+      display: table-row; /* Show the row when expanded */
+    }
   </style>
 </head>
 <body>
 
-<h2>Google Sheets Data</h2>
+<h2>Content</h2>
 
 <table id="dataTable">
   <thead>
@@ -60,8 +66,8 @@
         const headerCells = rows[0].split(',');
         let headerRow = tableHeader.insertRow();
         headerCells.forEach((cell, index) => {
-          // Skip columns 3 (index 2) and 9 (index 8)
-          if (index !== 2 && index !== 8) {
+          // Skip columns 3 (index 2) and 9 (index 8) and the first column (index 0)
+          if (index !== 0 && index !== 2 && index !== 8) {
             let newHeaderCell = headerRow.insertCell();
             newHeaderCell.textContent = cell || ''; // Populate each header cell
           }
@@ -77,10 +83,10 @@
               if (cells[2] === "Yes") {
                 let newRow = tableBody.insertRow();
                 let colIndex = 0;
-                
+
                 for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-                  // Skip columns 3 (index 2) and 9 (index 8)
-                  if (i !== 2 && i !== 8) {
+                  // Skip columns 3 (index 2) and 9 (index 8) and the first column (index 0)
+                  if (i !== 0 && i !== 2 && i !== 8) {
                     let newCell = newRow.insertCell();
                     if (i === 7) {  // Column 8 (index 7) - Make it a link
                       const link = document.createElement('a');
@@ -93,6 +99,11 @@
                     }
                   }
                 }
+
+                // Add event listener to the second column (index 1) to toggle row expansion
+                newRow.cells[1].addEventListener('click', function() {
+                  newRow.classList.toggle('expanded');  // Toggle the expanded class
+                });
               }
             }
           }
