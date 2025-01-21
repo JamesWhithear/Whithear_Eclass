@@ -45,12 +45,9 @@
       document.body.style.backgroundColor = backColor;
     }
 
-    // Apply table header color if valid hex code is provided
-    if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
-      const thElements = document.querySelectorAll('th');
-      thElements.forEach(th => {
-        th.style.backgroundColor = tableHeaderColor;
-      });
+    // Apply table row color if valid hex code is provided
+    if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+      document.querySelector('#dataTable').style.backgroundColor = tableRowColor;
     }
 
     if (!classSeperator) {
@@ -83,9 +80,9 @@
           }
         });
 
-        // Apply the table header color again after the header row is inserted
+        // Apply the table header color after the header is created
         if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
-          const thElements = document.querySelectorAll('th');
+          const thElements = tableHeader.querySelectorAll('th');
           thElements.forEach(th => {
             th.style.backgroundColor = tableHeaderColor;
           });
