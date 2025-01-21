@@ -16,12 +16,6 @@
       padding: 8px;
       text-align: left;
     }
-    .expandable-row {
-      display: none; /* Start with the expandable rows hidden */
-    }
-    .expanded {
-      display: table-row; /* Show the row when expanded */
-    }
   </style>
 </head>
 <body>
@@ -39,22 +33,16 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Get the URL parameters
+    // Get the Class_Seperator parameter from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const classSeperator = urlParams.get('Class_Seperator');
-    const sheetId = urlParams.get('SheetID');
-    const bColor = urlParams.get('B_Color');
     
-    if (!classSeperator || !sheetId || !bColor) {
-      console.error("Missing URL parameters.");
+    if (!classSeperator) {
+      console.error("No Class_Seperator parameter in URL.");
       return;
     }
 
-    // Set the background color using the B_Color parameter
-    document.body.style.backgroundColor = bColor;
-
-    // Construct the Google Sheets URL using the SheetID parameter
-    const sheetUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv`;
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
     
     // Using a CORS proxy to bypass CORS restriction
     const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -72,8 +60,8 @@
         const headerCells = rows[0].split(',');
         let headerRow = tableHeader.insertRow();
         headerCells.forEach((cell, index) => {
-          // Skip columns 3 (index 2), 9 (index 8), and the first column (index 0)
-          if (index !== 0 && index !== 2 && index !== 8) {
+          // Skip columns 3 (index 2) and 9 (index 8)
+          if (index !== 2 && index !== 8) {
             let newHeaderCell = headerRow.insertCell();
             newHeaderCell.textContent = cell || ''; // Populate each header cell
           }
@@ -89,10 +77,10 @@
               if (cells[2] === "Yes") {
                 let newRow = tableBody.insertRow();
                 let colIndex = 0;
-
+                
                 for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-                  // Skip columns 3 (index 2), 9 (index 8), and the first column (index 0)
-                  if (i !== 0 && i !== 2 && i !== 8) {
+                  // Skip columns 3 (index 2) and 9 (index 8)
+                  if (i !== 2 && i !== 8) {
                     let newCell = newRow.insertCell();
                     if (i === 7) {  // Column 8 (index 7) - Make it a link
                       const link = document.createElement('a');
@@ -105,11 +93,6 @@
                     }
                   }
                 }
-
-                // Add event listener to the second column (index 1) to toggle row expansion
-                newRow.cells[1].addEventListener('click', function() {
-                  newRow.classList.toggle('expanded');  // Toggle the expanded class
-                });
               }
             }
           }
