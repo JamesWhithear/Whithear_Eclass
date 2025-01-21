@@ -33,10 +33,16 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Get the Class_Seperator parameter from the URL
+    // Get the parameters from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const classSeperator = urlParams.get('Class_Seperator');
-    
+    const backColor = urlParams.get('Back_Color');
+
+    // Apply background color if valid hex code is provided
+    if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
+      document.body.style.backgroundColor = backColor;
+    }
+
     if (!classSeperator) {
       console.error("No Class_Seperator parameter in URL.");
       return;
