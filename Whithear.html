@@ -53,14 +53,6 @@
       });
     }
 
-    // Apply table row color if valid hex code is provided
-    if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-      const trElements = document.querySelectorAll('#dataTable tbody tr');
-      trElements.forEach(tr => {
-        tr.style.backgroundColor = tableRowColor;
-      });
-    }
-
     if (!classSeperator) {
       console.error("No Class_Seperator parameter in URL.");
       return;
@@ -91,6 +83,14 @@
           }
         });
 
+        // Apply the table header color again after the header row is inserted
+        if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+          const thElements = document.querySelectorAll('th');
+          thElements.forEach(th => {
+            th.style.backgroundColor = tableHeaderColor;
+          });
+        }
+
         // Loop through the remaining rows and create table rows
         rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
           const cells = row.split(',');
@@ -116,6 +116,11 @@
                       newCell.textContent = cells[i] || ''; // Populate each other cell
                     }
                   }
+                }
+
+                // Apply the row color after it's been added to the table
+                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                  newRow.style.backgroundColor = tableRowColor;
                 }
               }
             }
