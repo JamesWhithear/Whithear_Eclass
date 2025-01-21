@@ -46,28 +46,21 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
-    
-    // Using a CORS proxy to bypass CORS restriction
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const finalUrl = proxyUrl + url;
+    const sheetId = '2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy';
+    const url = `https://spreadsheets.google.com/feeds/list/${sheetId}/od6/public/values?alt=json`;
 
-    fetch(finalUrl)
-      .then(response => response.text())
+    fetch(url)
+      .then(response => response.json())
       .then(data => {
-        // Split the CSV data into rows
-        const rows = data.split('\n');
+        const entries = data.feed.entry;
         const tableBody = document.querySelector("#dataTable tbody");
 
-        // Loop through each row and create table rows
-        rows.forEach(row => {
-          const cells = row.split(',');
-          if (cells.length > 1) {
-            let newRow = tableBody.insertRow();
-            for (let i = 0; i < 12; i++) {
-              let newCell = newRow.insertCell();
-              newCell.textContent = cells[i] || ''; // Populate each cell
-            }
+        entries.forEach(entry => {
+          const newRow = tableBody.insertRow();
+          for (let i = 1; i <= 12; i++) {
+            let cellValue = entry[`gsx$column${i}`] ? entry[`gsx$column${i}`].$t : ''; // Adjust column names (e.g., gsx$column1, gsx$column2, etc.)
+            let newCell = newRow.insertCell();
+            newCell.textContent = cellValue; // Populate each cell
           }
         });
       })
