@@ -59,9 +59,12 @@
         // Extract the header from the first row and set it
         const headerCells = rows[0].split(',');
         let headerRow = tableHeader.insertRow();
-        headerCells.forEach(cell => {
-          let newHeaderCell = headerRow.insertCell();
-          newHeaderCell.textContent = cell || ''; // Populate each header cell
+        headerCells.forEach((cell, index) => {
+          // Skip the "Visible" and "Mini Lesson Link" columns (indexes 7 and 8)
+          if (index !== 7 && index !== 8) {
+            let newHeaderCell = headerRow.insertCell();
+            newHeaderCell.textContent = cell || ''; // Populate each header cell
+          }
         });
 
         // Loop through the remaining rows and create table rows
@@ -73,18 +76,21 @@
               // Check if column C is "Yes" (index 2)
               if (cells[2] === "Yes") {
                 let newRow = tableBody.insertRow();
+                let colIndex = 0;
+                
                 for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-                  let newCell = newRow.insertCell();
-                  if (i === 7) {  // Column 8 (index 7)
-                    // Create a link with the text from column 8 and the link from column 9
-                    const link = document.createElement('a');
-                    link.href = cells[8] || '#';  // Column 9 (index 8) as the link
-                    link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
-                    newCell.appendChild(link);  // Append the link to the cell
-                  } else if (i === 8) {  // Skip Column 9 as it's already used for the link
-                    continue;
-                  } else {
-                    newCell.textContent = cells[i] || ''; // Populate each other cell
+                  // Skip the "Visible" and "Mini Lesson Link" columns (indexes 7 and 8)
+                  if (i !== 7 && i !== 8) {
+                    let newCell = newRow.insertCell();
+                    if (i === 7) {  // Column 8 (index 7) - Make it a link
+                      const link = document.createElement('a');
+                      link.href = cells[8] || '#';  // Column 9 (index 8) as the link
+                      link.target = '_blank';  // Open in a new tab
+                      link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
+                      newCell.appendChild(link);  // Append the link to the cell
+                    } else {
+                      newCell.textContent = cells[i] || ''; // Populate each other cell
+                    }
                   }
                 }
               }
