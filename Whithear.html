@@ -159,13 +159,70 @@
           detailsCell.colSpan = headerCells.length; // Make the details cell span across all columns
 
           // Concatenate columns 4, 5, 6, 7, 8, and 10 with a carriage return between each section
-          let additionalDetails = ` <br>
-            Column 4: ${cells[3] || '<br>'}<br>
-            Column 5: ${cells[4] || '<br>'}<br>
-            Column 6: ${cells[5] || '<br>'}<br>
-            Column 7: ${cells[6] || '<br>'}<br>
-            Column 8: <a href="${cells[8] || '#'}" target="_blank">${cells[7] || '<br>'}</a><br>
-            Column 10: ${cells[9] || '<br>'}<br>
+          let additionalDetails = ` 
+          
+          <div class="container-fluid"><header>
+<div class="row descriptive-banner">
+<div class="col-sm-8 col-sm-offset-2">
+<h1>&lt;TITLE&gt;</h1>
+<p><span style="text-decoration: underline;"><strong>AKS</strong></span>: &lt;AKS&gt;&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Focus of Learning</strong></span>: Insert focus of learning here.</p>
+</div>
+</div>
+</header><main><!-- Typography -->
+<div class="row">
+<div class="col-sm-12">
+<div class="two-col-panels">
+<div class="row eq-wrapper">
+<div class="col-sm-6 eq-items">
+<h3><img src="/shared/Templates_2018/images/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h3>
+<p>&lt;AS&gt;</p>
+</div>
+<div class="col-sm-6 eq-items">
+<h3><img src="/shared/Templates_2018/images/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h3>
+<p>&lt;Mini Lesson&gt;&nbsp;</p>
+<p>&lt;Link&gt;<a href="https://docs.google.com/presentation/d/10xs2ubieb5ivT72LlZEIr5i6756b_jzZCWm-FKRTFyI/edit?usp=sharing" target="_blank" rel="noopener"></a></p>
+<strong><a href="/d2l/common/dialogs/quickLink/quickLink.d2l?ou=575826&amp;type=content&amp;rcode=Gwinnett-18147127" target="_self"></a></strong></div>
+</div>
+</div>
+</div>
+<div class="col-sm-8 col-sm-offset-2">
+<div class="stacked-panels">
+<div class="stacked-panel">
+<h3><img src="/shared/Templates_2018/images/Show%20Icon.png" alt="" title=""> Independent Practice</h3>
+<p>&lt;Independent Practice&gt;</p>
+</div>
+</div>
+</div>
+</div>
+</main></div>
+<!-- jQuery CDN w/ local fallback (Bootstrap Dependency) -->
+<p>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>// <![CDATA[
+window.jQuery || document.write('<script src="../../assets/thirdpartylib/jquery/jquery-1.11.3.min.js"><\/script>')
+// ]]></script></p>
+<!-- Bootstrap CDN JS -->
+<p>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</p>
+<!-- SVG Fallback JS -->
+<p>
+<script src="/shared/Templates_2018/../Temp/HTML_Template_Generic/assets/thirdpartylib/svg4everybody/svg4everybody.min.js"></script>
+</p>
+<!-- Course Scripts -->
+<p>
+<script src="/shared/Templates_2018/../Temp/HTML_Template_Generic/assets/js/main.min.js"></script>
+</p>
+          
+          
+          <br>
+            Column 4: ${cells[3] || ''}<br>
+            Column 5: ${cells[4] || ''}<br>
+            Column 6: ${cells[5] || ''}<br>
+            Column 7: ${cells[6] || ''}<br>
+            Column 8: <a href="${cells[8] || '#'}" target="_blank">${cells[7] || ''}</a><br>
+            Column 10: ${cells[9] || ''}<br><br>
           `;
           
           detailsCell.innerHTML = additionalDetails.trim();  // Set the concatenated details content
