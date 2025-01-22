@@ -16,14 +16,11 @@
       padding: 8px;
       text-align: left;
     }
-    .details-row {
-      display: none; /* Hide the details row by default */
-      background-color: #f9f9f9;
-    }
-    .show-hide-btn {
-      cursor: pointer;
-      color: blue;
-      text-decoration: underline;
+    .detailed-view {
+      background-color: #f5f5f5;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid #ccc;
     }
   </style>
 </head>
@@ -83,14 +80,20 @@
             newHeaderCell.textContent = cell || ''; // Populate each header cell
 
             if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
-              newHeaderCell.style.backgroundColor = tableHeaderColor;
-            }
+                  newHeaderCell.style.backgroundColor = tableHeaderColor;
+                }
           }
         });
 
-        // Prepare the rows for sorting
-        let tableRows = [];
-        
+        // Apply the table header color after the header is created
+        if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+          const thElements = tableHeader.querySelectorAll('th');
+          thElements.forEach(th => {
+            th.style.backgroundColor = tableHeaderColor; // Apply to header cells
+          });
+        }
+
+        // Loop through the remaining rows and create table rows
         rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
           const cells = row.split(',');
           if (cells.length > 1) {
@@ -98,66 +101,99 @@
             if (cells[0] === classSeperator) {
               // Check if column C is "Yes" (index 2)
               if (cells[2] === "Yes") {
-                tableRows.push(cells); // Collect rows to be rendered
+                let newRow = tableBody.insertRow();
+                
+                // Create a button in the first column
+                let buttonCell = newRow.insertCell();
+                let button = document.createElement('button');
+                button.textContent = 'Show Details';
+                button.classList.add('btn', 'btn-info'); // Bootstrap class for styling
+                button.onclick = function() {
+                  // Toggle detailed view on button click
+                  const detailedView = document.createElement('div');
+                  detailedView.classList.add('detailed-view');
+
+                  // Insert the full HTML template as detailed view
+                  detailedView.innerHTML = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="utf-8">
+                        <meta http-equiv="x-ua-compatible" content="ie=edge">
+                        <title>Panels</title>
+                        <meta name="description" content="">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <!-- Bootstrap CDN CSS -->
+                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+                        <!-- Font Awesome CDN CSS -->
+                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+                        <!-- Course Styles -->
+                        <link rel="stylesheet" href="/shared/Templates_2018/css/main.min.css">
+                        <!-- HTML Template Theme Page Styles - DO NOT LOAD ANYWHERE ELSE -->
+                        <link rel="stylesheet" href="/shared/Templates_2018/css/template-only.min.css">
+                    </head>
+                    <body class="content">
+                    <div class="container-fluid">
+                    <header>
+                    <div class="row descriptive-banner">
+                    <div class="col-sm-8 col-sm-offset-2">
+                    <h1>Introduction To Engineering</h1>
+                    <p><span style="text-decoration: underline;"><strong>AKS</strong></span>: demonstrate employability skills required by business and industry&nbsp;</p>
+                    <p><span style="text-decoration: underline;"><strong>Focus of Learning</strong></span>: Insert focus of learning here.</p>
+                    </div>
+                    </div>
+                    </header>
+                    <main><!-- Typography -->
+                    <div class="row">
+                    <div class="col-sm-12">
+                    <div class="two-col-panels">
+                    <div class="row eq-wrapper">
+                    <div class="col-sm-6 eq-items">
+                    <h3><img src="/shared/Templates_2018/images/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h3>
+                    <p>I can Introduce myself to a random Person that I have never met before.&nbsp;&nbsp;</p>
+                    <p>I can be presentable</p>
+                    <p>I can Identify Problems&nbsp;</p>
+                    </div>
+                    <div class="col-sm-6 eq-items">
+                    <h3><img src="/shared/Templates_2018/images/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h3>
+                    <p>Introduction to My Classroom and to teamwork</p>
+                    <p><a href="https://docs.google.com/presentation/d/10xs2ubieb5ivT72LlZEIr5i6756b_jzZCWm-FKRTFyI/edit?usp=sharing" target="_blank" rel="noopener">Day 1 Welcome</a></p>
+                    <strong><a href="/d2l/common/dialogs/quickLink/quickLink.d2l?ou=575826&amp;type=content&amp;rcode=Gwinnett-18147127" target="_self"></a></strong></div>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-8 col-sm-offset-2">
+                    <div class="stacked-panels">
+                    <div class="stacked-panel">
+                    <h3><img src="/shared/Templates_2018/images/Show%20Icon.png" alt="" title=""> Independent Practice</h3>
+                    <p>Team Activity Introducing yourself to your neighbor</p>
+                    <p>As a class we can Identify problems in the classroom Seating.&nbsp;</p>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </main></div>
+                    </body>
+                    </html>
+                  `;
+                  newRow.appendChild(detailedView); // Append the detailed view
+                };
+                buttonCell.appendChild(button); // Append button to the row
+
+                // Insert other cells for the data
+                for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
+                  // Skip columns 3 (index 2) and 9 (index 8)
+                  if (i !== 2 && i !== 8) {
+                    let newCell = newRow.insertCell();
+                    newCell.textContent = cells[i] || ''; // Populate each cell
+                    if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                      newCell.style.backgroundColor = tableRowColor;
+                    }
+                  }
+                }
               }
             }
           }
-        });
-
-        // Sort the rows by the second column (date column) in descending order
-        tableRows.sort((a, b) => {
-          const dateA = new Date(a[1]);  // Assume second column is the date column
-          const dateB = new Date(b[1]);
-          return dateB - dateA;  // Sort by date in descending order (latest first)
-        });
-
-        // Loop through the sorted rows and create table rows
-        tableRows.forEach(cells => {
-          let newRow = tableBody.insertRow();
-          for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-            // Skip columns 3 (index 2) and 9 (index 8)
-            if (i !== 2 && i !== 8) {
-              let newCell = newRow.insertCell();
-              if (i === 7) {  // Column 8 (index 7) - Make it a link
-                const link = document.createElement('a');
-                link.href = cells[8] || '#';  // Column 9 (index 8) as the link
-                link.target = '_blank';  // Open in a new tab
-                link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
-                newCell.appendChild(link);  // Append the link to the cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
-                }
-              } else {
-                newCell.textContent = cells[i] || ''; // Populate each other cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
-                }
-              }
-            }
-          }
-
-          // Add a "Show/Hide Details" button in the last cell
-          const buttonCell = newRow.insertCell();
-          const button = document.createElement('button');
-          button.textContent = 'Show Details';
-          button.classList.add('show-hide-btn');
-          button.addEventListener('click', function() {
-            const detailsRow = newRow.nextElementSibling; // The next row is the details row
-            if (detailsRow && detailsRow.classList.contains('details-row')) {
-              const isHidden = detailsRow.style.display === 'none';
-              detailsRow.style.display = isHidden ? 'table-row' : 'none';
-              button.textContent = isHidden ? 'Hide Details' : 'Show Details';
-            }
-          });
-
-          buttonCell.appendChild(button);
-
-          // Add the details row right after the main row
-          let detailsRow = tableBody.insertRow();
-          detailsRow.classList.add('details-row'); // Add a class for styling
-          const detailsCell = detailsRow.insertCell();
-          detailsCell.colSpan = headerCells.length; // Make the details cell span across all columns
-          detailsCell.textContent = 'Additional details go here';  // You can customize this content
         });
       })
       .catch(error => {
