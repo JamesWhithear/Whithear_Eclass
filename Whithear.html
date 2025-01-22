@@ -108,6 +108,9 @@
                       link.target = '_blank';  // Open in a new tab
                       link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
                       newCell.appendChild(link);  // Append the link to the cell
+                      if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                        newCell.style.backgroundColor = tableRowColor;
+                      }
                     } else {
                       newCell.textContent = cells[i] || ''; // Populate each other cell
                       if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
