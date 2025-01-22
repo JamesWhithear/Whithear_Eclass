@@ -160,12 +160,12 @@
 
           // Concatenate columns 4, 5, 6, 7, 8, and 10 with a carriage return between each section
           let additionalDetails = `
-            Column 4: ${cells[3] || ''}\n
-            Column 5: ${cells[4] || ''}\n
-            Column 6: ${cells[5] || ''}\n
-            Column 7: ${cells[6] || ''}\n
-            Column 8: <a href="${cells[8] || '#'}" target="_blank">${cells[7] || ''}</a>\n
-            Column 10: ${cells[9] || ''}\n
+            Column 4: ${cells[3] || '<br>'}\n
+            Column 5: ${cells[4] || '<br>'}\n
+            Column 6: ${cells[5] || '<br>'}\n
+            Column 7: ${cells[6] || '<br>'}\n
+            Column 8: <a href="${cells[8] || '#'}" target="_blank">${cells[7] || '<br>'}</a>\n
+            Column 10: ${cells[9] || '<br>'}\n
           `;
           
           detailsCell.innerHTML = additionalDetails.trim();  // Set the concatenated details content
