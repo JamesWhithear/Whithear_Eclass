@@ -16,14 +16,15 @@
       padding: 8px;
       text-align: left;
     }
-    .details-row {
-      display: none; /* Hide the details row by default */
-      background-color: #f9f9f9;
+    .detailed-view {
+      background-color: #f5f5f5;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid #ccc;
+      display: none; /* Initially hidden */
     }
-    .show-hide-btn {
-      cursor: pointer;
-      color: blue;
-      text-decoration: underline;
+    .detailed-view.show {
+      display: block; /* Show details when this class is added */
     }
   </style>
 </head>
@@ -83,14 +84,20 @@
             newHeaderCell.textContent = cell || ''; // Populate each header cell
 
             if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
-              newHeaderCell.style.backgroundColor = tableHeaderColor;
-            }
+                  newHeaderCell.style.backgroundColor = tableHeaderColor;
+                }
           }
         });
 
-        // Prepare the rows for sorting
-        let tableRows = [];
-        
+        // Apply the table header color after the header is created
+        if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+          const thElements = tableHeader.querySelectorAll('th');
+          thElements.forEach(th => {
+            th.style.backgroundColor = tableHeaderColor; // Apply to header cells
+          });
+        }
+
+        // Loop through the remaining rows and create table rows
         rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
           const cells = row.split(',');
           if (cells.length > 1) {
@@ -98,66 +105,62 @@
             if (cells[0] === classSeperator) {
               // Check if column C is "Yes" (index 2)
               if (cells[2] === "Yes") {
-                tableRows.push(cells); // Collect rows to be rendered
+                let newRow = tableBody.insertRow();
+                
+                // Create a button in the first column
+                let buttonCell = newRow.insertCell();
+                let button = document.createElement('button');
+                button.textContent = 'Show Details';
+                button.classList.add('btn', 'btn-info'); // Bootstrap class for styling
+                button.onclick = function() {
+                  const detailedView = newRow.querySelector('.detailed-view');
+                  if (detailedView) {
+                    detailedView.classList.toggle('show');  // Toggle visibility of detailed view
+                    button.textContent = detailedView.classList.contains('show') ? 'Hide Details' : 'Show Details';
+                  }
+                };
+                buttonCell.appendChild(button); // Append button to the row
+
+                // Insert other cells for the data
+                for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
+                  // Skip columns 3 (index 2) and 9 (index 8)
+                  if (i !== 2 && i !== 8) {
+                    let newCell = newRow.insertCell();
+                    newCell.textContent = cells[i] || ''; // Populate each cell
+                    if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                      newCell.style.backgroundColor = tableRowColor;
+                    }
+                  }
+                }
+
+                // Create the detailed view content
+                const detailedView = document.createElement('div');
+                detailedView.classList.add('detailed-view');
+                detailedView.innerHTML = `
+                  <h1>Introduction To Engineering</h1>
+                  <p><span style="text-decoration: underline;"><strong>AKS</strong></span>: demonstrate employability skills required by business and industry</p>
+                  <p><span style="text-decoration: underline;"><strong>Focus of Learning</strong></span>: Insert focus of learning here.</p>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <h3>Activating Strategy</h3>
+                      <p>I can Introduce myself to a random person that I have never met before.</p>
+                      <p>I can be presentable</p>
+                      <p>I can Identify Problems</p>
+                    </div>
+                    <div class="col-sm-6">
+                      <h3>Mini-Lesson</h3>
+                      <p>Introduction to My Classroom and teamwork</p>
+                      <a href="https://docs.google.com/presentation/d/10xs2ubieb5ivT72LlZEIr5i6756b_jzZCWm-FKRTFyI/edit?usp=sharing" target="_blank">Day 1 Welcome</a>
+                    </div>
+                  </div>
+                  <h3>Independent Practice</h3>
+                  <p>Team Activity Introducing yourself to your neighbor</p>
+                  <p>As a class we can Identify problems in the classroom Seating.</p>
+                `;
+                newRow.appendChild(detailedView); // Append the detailed view
               }
             }
           }
-        });
-
-        // Sort the rows by the second column (date column) in descending order
-        tableRows.sort((a, b) => {
-          const dateA = new Date(a[1]);  // Assume second column is the date column
-          const dateB = new Date(b[1]);
-          return dateB - dateA;  // Sort by date in descending order (latest first)
-        });
-
-        // Loop through the sorted rows and create table rows
-        tableRows.forEach(cells => {
-          let newRow = tableBody.insertRow();
-          for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-            // Skip columns 3 (index 2) and 9 (index 8)
-            if (i !== 2 && i !== 8) {
-              let newCell = newRow.insertCell();
-              if (i === 7) {  // Column 8 (index 7) - Make it a link
-                const link = document.createElement('a');
-                link.href = cells[8] || '#';  // Column 9 (index 8) as the link
-                link.target = '_blank';  // Open in a new tab
-                link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
-                newCell.appendChild(link);  // Append the link to the cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
-                }
-              } else {
-                newCell.textContent = cells[i] || ''; // Populate each other cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
-                }
-              }
-            }
-          }
-
-          // Add a "Show/Hide Details" button in the last cell
-          const buttonCell = newRow.insertCell();
-          const button = document.createElement('button');
-          button.textContent = 'Show Details';
-          button.classList.add('show-hide-btn');
-          button.addEventListener('click', function() {
-            const detailsRow = newRow.nextElementSibling; // The next row is the details row
-            if (detailsRow && detailsRow.classList.contains('details-row')) {
-              const isHidden = detailsRow.style.display === 'none';
-              detailsRow.style.display = isHidden ? 'table-row' : 'none';
-              button.textContent = isHidden ? 'Hide Details' : 'Show Details';
-            }
-          });
-
-          buttonCell.appendChild(button);
-
-          // Add the details row right after the main row
-          let detailsRow = tableBody.insertRow();
-          detailsRow.classList.add('details-row'); // Add a class for styling
-          const detailsCell = detailsRow.insertCell();
-          detailsCell.colSpan = headerCells.length; // Make the details cell span across all columns
-          detailsCell.textContent = 'Additional details go here';  // You can customize this content
         });
       })
       .catch(error => {
