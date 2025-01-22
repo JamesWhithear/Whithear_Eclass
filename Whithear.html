@@ -45,11 +45,6 @@
       document.body.style.backgroundColor = backColor;
     }
 
-    // Apply table row color if valid hex code is provided
-    if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-      document.querySelector('#dataTable').style.backgroundColor = tableRowColor;
-    }
-
     if (!classSeperator) {
       console.error("No Class_Seperator parameter in URL.");
       return;
@@ -58,7 +53,7 @@
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
     
     // Using a CORS proxy to bypass CORS restriction
-    const proxyUrl = '';//'https://cors-anywhere.herokuapp.com/';
+    const proxyUrl = ''; // Use proxy if needed
     const finalUrl = proxyUrl + sheetUrl;
 
     fetch(finalUrl)
@@ -84,7 +79,7 @@
         if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
           const thElements = tableHeader.querySelectorAll('th');
           thElements.forEach(th => {
-            th.style.backgroundColor = tableHeaderColor;
+            th.style.backgroundColor = tableHeaderColor; // Apply to header cells
           });
         }
 
@@ -97,7 +92,6 @@
               // Check if column C is "Yes" (index 2)
               if (cells[2] === "Yes") {
                 let newRow = tableBody.insertRow();
-                let colIndex = 0;
                 
                 for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
                   // Skip columns 3 (index 2) and 9 (index 8)
