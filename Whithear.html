@@ -22,6 +22,12 @@
       margin-top: 20px;
       border: 2px solid #ccc;
     }
+    .detailed-view h3 {
+      margin-top: 0;
+    }
+    .detailed-view p {
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -113,68 +119,26 @@
                   const detailedView = document.createElement('div');
                   detailedView.classList.add('detailed-view');
 
-                  // Insert the full HTML template as detailed view
                   detailedView.innerHTML = `
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="utf-8">
-                        <meta http-equiv="x-ua-compatible" content="ie=edge">
-                        <title>Panels</title>
-                        <meta name="description" content="">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <!-- Bootstrap CDN CSS -->
-                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-                        <!-- Font Awesome CDN CSS -->
-                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-                        <!-- Course Styles -->
-                        <link rel="stylesheet" href="/shared/Templates_2018/css/main.min.css">
-                        <!-- HTML Template Theme Page Styles - DO NOT LOAD ANYWHERE ELSE -->
-                        <link rel="stylesheet" href="/shared/Templates_2018/css/template-only.min.css">
-                    </head>
-                    <body class="content">
-                    <div class="container-fluid">
-                    <header>
-                    <div class="row descriptive-banner">
-                    <div class="col-sm-8 col-sm-offset-2">
-                    <h1>Introduction To Engineering</h1>
-                    <p><span style="text-decoration: underline;"><strong>AKS</strong></span>: demonstrate employability skills required by business and industry&nbsp;</p>
-                    <p><span style="text-decoration: underline;"><strong>Focus of Learning</strong></span>: Insert focus of learning here.</p>
-                    </div>
-                    </div>
-                    </header>
-                    <main><!-- Typography -->
+                    <h3>Introduction To Engineering</h3>
+                    <p><strong>AKS</strong>: demonstrate employability skills required by business and industry</p>
+                    <p><strong>Focus of Learning</strong>: Insert focus of learning here.</p>
                     <div class="row">
-                    <div class="col-sm-12">
-                    <div class="two-col-panels">
-                    <div class="row eq-wrapper">
-                    <div class="col-sm-6 eq-items">
-                    <h3><img src="/shared/Templates_2018/images/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h3>
-                    <p>I can Introduce myself to a random Person that I have never met before.&nbsp;&nbsp;</p>
-                    <p>I can be presentable</p>
-                    <p>I can Identify Problems&nbsp;</p>
+                      <div class="col-sm-6">
+                        <h3>Activating Strategy</h3>
+                        <p>I can Introduce myself to a random person that I have never met before.</p>
+                        <p>I can be presentable</p>
+                        <p>I can Identify Problems</p>
+                      </div>
+                      <div class="col-sm-6">
+                        <h3>Mini-Lesson</h3>
+                        <p>Introduction to My Classroom and teamwork</p>
+                        <a href="https://docs.google.com/presentation/d/10xs2ubieb5ivT72LlZEIr5i6756b_jzZCWm-FKRTFyI/edit?usp=sharing" target="_blank">Day 1 Welcome</a>
+                      </div>
                     </div>
-                    <div class="col-sm-6 eq-items">
-                    <h3><img src="/shared/Templates_2018/images/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h3>
-                    <p>Introduction to My Classroom and to teamwork</p>
-                    <p><a href="https://docs.google.com/presentation/d/10xs2ubieb5ivT72LlZEIr5i6756b_jzZCWm-FKRTFyI/edit?usp=sharing" target="_blank" rel="noopener">Day 1 Welcome</a></p>
-                    <strong><a href="/d2l/common/dialogs/quickLink/quickLink.d2l?ou=575826&amp;type=content&amp;rcode=Gwinnett-18147127" target="_self"></a></strong></div>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="col-sm-8 col-sm-offset-2">
-                    <div class="stacked-panels">
-                    <div class="stacked-panel">
-                    <h3><img src="/shared/Templates_2018/images/Show%20Icon.png" alt="" title=""> Independent Practice</h3>
+                    <h3>Independent Practice</h3>
                     <p>Team Activity Introducing yourself to your neighbor</p>
-                    <p>As a class we can Identify problems in the classroom Seating.&nbsp;</p>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </main></div>
-                    </body>
-                    </html>
+                    <p>As a class, we can Identify problems in the classroom Seating.</p>
                   `;
                   newRow.appendChild(detailedView); // Append the detailed view
                 };
