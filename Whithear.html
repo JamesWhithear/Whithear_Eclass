@@ -161,20 +161,20 @@
           // Concatenate columns 4, 5, 6, 7, 8, and 10 with a carriage return between each section
           let additionalDetails = ` 
 
-<table border="1" width="80%" text-align="Center">
+<table border="1" width="80%" align="Center">
 <thead>
-    <tr style="background-color: lightgray;">
-      <th colspan="2">
-          <h1>${cells[3] || ''}</h1> <br><br>
+    <tr style="background-color: lightgray;" align="Center">
+      <th colspan="2" align="Center">
+          <h1>${cells[3] || ''}</h1> <br>
           <strong>AKS:</strong> ${cells[4] || ''} <br>
       </th>
     </tr>
   </thead>
   <tbody>
-    <tr style="background-color: white;">
-      <td width="50%">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2>  <br><br>  ${cells[5] || ''} <br> </td>  
+    <tr style="background-color: white;" align="Center">
+      <td width="50%" align="Center">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2> <br> ${cells[5] || ''} <br> </td>  
       
-      <td width="50%">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h2>  <br><br> ${cells[6] || ''} <a href="${cells[8] || '#'}" target="_blank">${cells[7] || ''}</a> <br> </td>
+      <td width="50%" align="Center">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h2> <br> ${cells[6] || ''} <br><a href="${cells[8] || '#'}" target="_blank">${cells[7] || ''}</a> <br> </td>
     </tr>
   </tbody>
 </table>
