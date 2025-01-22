@@ -103,11 +103,11 @@
           }
         });
 
-        // Sort the rows by the second column (date column)
+        // Sort the rows by the second column (date column) in descending order
         tableRows.sort((a, b) => {
           const dateA = new Date(a[1]);  // Assume second column is the date column
           const dateB = new Date(b[1]);
-          return dateA - dateB;  // Sort by date in ascending order
+          return dateB - dateA;  // Sort by date in descending order (latest first)
         });
 
         // Loop through the sorted rows and create table rows
