@@ -72,8 +72,13 @@
           if (index !== 2 && index !== 8) {
             let newHeaderCell = headerRow.insertCell();
             newHeaderCell.textContent = cell || ''; // Populate each header cell
+
+            if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                  newHeaderCell.style.backgroundColor = tableRowColor;
+                }
           }
         });
+
 
         // Apply the table header color after the header is created
         if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
@@ -107,11 +112,6 @@
                       newCell.textContent = cells[i] || ''; // Populate each other cell
                     }
                   }
-                }
-
-                // Apply the row color after it's been added to the table
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newRow.style.backgroundColor = tableRowColor;
                 }
               }
             }
