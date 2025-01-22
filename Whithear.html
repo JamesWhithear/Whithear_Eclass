@@ -161,36 +161,44 @@
           // Concatenate columns 4, 5, 6, 7, 8, and 10 with a carriage return between each section
           let additionalDetails = ` 
 
-<table border="1" width="80%" align="Center">
+<table style="margin: 0 auto; border: none; text-align: center; ">
 <thead>
     <tr style="background-color: lightgray;" align="Center">
+      <th></th>
       <th colspan="4" align="Center">
           <h1>${cells[3] || ''}</h1> <br>
           <strong>AKS:</strong> ${cells[4] || ''} <br>
       </th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
 
     <tr style="background-color: white; text-align: center;">
+      <td width="10%">  </td>
       <td width="20%">  </td>
-      <td width="30%">  </td>
-      <td width="30%">  </td>
       <td width="20%">  </td>
+      <td width="20%">  </td>
+      <td width="20%">  </td>
+      <td width="10%">  </td>
     </tr>
   
-    <tr style="background-color: white; text-align: center;">
+    <tr style="background-color: white; text-align: center;  border: none;">
+      <td>  </td>
       <td colspan="2" width="50%">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2> <br> ${cells[5] || ''} <br> </td>  
       
       <td colspan="2" width="50%">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h2> <br> ${cells[6] || ''} <br><a href="${cells[8] || '#'}" target="_blank">${cells[7] || ''}</a> <br> </td>
+      <td>  </td>
     </tr>
 
-    <tr> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
+    <tr> <td>  </td> <td>  </td> <td> </td> <td> </td> <td> </td> <td> </td> </tr>
 
     <tr>
+      <td>  </td>
       <td style="background-color: white;">  </td>
       <td colspan="2" style="background-color: lightgray;" > <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2> <br> ${cells[5] || ''} <br> </td>
       <td style="background-color: white;">  </td>
+      <td>  </td>
     </tr>
     
   </tbody>
