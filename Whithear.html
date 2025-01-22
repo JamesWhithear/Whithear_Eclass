@@ -58,7 +58,7 @@
     const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
     
     // Using a CORS proxy to bypass CORS restriction
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const proxyUrl = '';//'https://cors-anywhere.herokuapp.com/';
     const finalUrl = proxyUrl + sheetUrl;
 
     fetch(finalUrl)
