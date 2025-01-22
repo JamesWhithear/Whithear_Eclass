@@ -79,7 +79,6 @@
           }
         });
 
-
         // Apply the table header color after the header is created
         if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
           const thElements = tableHeader.querySelectorAll('th');
@@ -88,7 +87,9 @@
           });
         }
 
-        // Loop through the remaining rows and create table rows
+        // Prepare the rows for sorting
+        let tableRows = [];
+        
         rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
           const cells = row.split(',');
           if (cells.length > 1) {
@@ -96,28 +97,39 @@
             if (cells[0] === classSeperator) {
               // Check if column C is "Yes" (index 2)
               if (cells[2] === "Yes") {
-                let newRow = tableBody.insertRow();
-                
-                for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-                  // Skip columns 3 (index 2) and 9 (index 8)
-                  if (i !== 2 && i !== 8) {
-                    let newCell = newRow.insertCell();
-                    if (i === 7) {  // Column 8 (index 7) - Make it a link
-                      const link = document.createElement('a');
-                      link.href = cells[8] || '#';  // Column 9 (index 8) as the link
-                      link.target = '_blank';  // Open in a new tab
-                      link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
-                      newCell.appendChild(link);  // Append the link to the cell
-                      if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                        newCell.style.backgroundColor = tableRowColor;
-                      }
-                    } else {
-                      newCell.textContent = cells[i] || ''; // Populate each other cell
-                      if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                        newCell.style.backgroundColor = tableRowColor;
-                      }
-                    }
-                  }
+                tableRows.push(cells); // Collect rows to be rendered
+              }
+            }
+          }
+        });
+
+        // Sort the rows by the second column (date column)
+        tableRows.sort((a, b) => {
+          const dateA = new Date(a[1]);  // Assume second column is the date column
+          const dateB = new Date(b[1]);
+          return dateA - dateB;  // Sort by date in ascending order
+        });
+
+        // Loop through the sorted rows and create table rows
+        tableRows.forEach(cells => {
+          let newRow = tableBody.insertRow();
+          for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
+            // Skip columns 3 (index 2) and 9 (index 8)
+            if (i !== 2 && i !== 8) {
+              let newCell = newRow.insertCell();
+              if (i === 7) {  // Column 8 (index 7) - Make it a link
+                const link = document.createElement('a');
+                link.href = cells[8] || '#';  // Column 9 (index 8) as the link
+                link.target = '_blank';  // Open in a new tab
+                link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
+                newCell.appendChild(link);  // Append the link to the cell
+                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                  newCell.style.backgroundColor = tableRowColor;
+                }
+              } else {
+                newCell.textContent = cells[i] || ''; // Populate each other cell
+                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                  newCell.style.backgroundColor = tableRowColor;
                 }
               }
             }
