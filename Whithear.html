@@ -16,6 +16,18 @@
       padding: 8px;
       text-align: left;
     }
+    .detailed-view {
+      background-color: #f5f5f5;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid #ccc;
+    }
+    .detailed-view h3 {
+      margin-top: 0;
+    }
+    .detailed-view p {
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -87,9 +99,7 @@
           });
         }
 
-        // Prepare the rows for sorting
-        let tableRows = [];
-        
+        // Loop through the remaining rows and create table rows
         rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
           const cells = row.split(',');
           if (cells.length > 1) {
@@ -97,39 +107,53 @@
             if (cells[0] === classSeperator) {
               // Check if column C is "Yes" (index 2)
               if (cells[2] === "Yes") {
-                tableRows.push(cells); // Collect rows to be rendered
-              }
-            }
-          }
-        });
+                let newRow = tableBody.insertRow();
+                
+                // Create a button in the first column
+                let buttonCell = newRow.insertCell();
+                let button = document.createElement('button');
+                button.textContent = 'Show Details';
+                button.classList.add('btn', 'btn-info'); // Bootstrap class for styling
+                button.onclick = function() {
+                  // Toggle detailed view on button click
+                  const detailedView = document.createElement('div');
+                  detailedView.classList.add('detailed-view');
 
-        // Sort the rows by the second column (date column) in descending order
-        tableRows.sort((a, b) => {
-          const dateA = new Date(a[1]);  // Assume second column is the date column
-          const dateB = new Date(b[1]);
-          return dateB - dateA;  // Sort by date in descending order (latest first)
-        });
+                  detailedView.innerHTML = `
+                    <h3>Introduction To Engineering</h3>
+                    <p><strong>AKS</strong>: demonstrate employability skills required by business and industry</p>
+                    <p><strong>Focus of Learning</strong>: Insert focus of learning here.</p>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <h3>Activating Strategy</h3>
+                        <p>I can Introduce myself to a random person that I have never met before.</p>
+                        <p>I can be presentable</p>
+                        <p>I can Identify Problems</p>
+                      </div>
+                      <div class="col-sm-6">
+                        <h3>Mini-Lesson</h3>
+                        <p>Introduction to My Classroom and teamwork</p>
+                        <a href="https://docs.google.com/presentation/d/10xs2ubieb5ivT72LlZEIr5i6756b_jzZCWm-FKRTFyI/edit?usp=sharing" target="_blank">Day 1 Welcome</a>
+                      </div>
+                    </div>
+                    <h3>Independent Practice</h3>
+                    <p>Team Activity Introducing yourself to your neighbor</p>
+                    <p>As a class, we can Identify problems in the classroom Seating.</p>
+                  `;
+                  newRow.appendChild(detailedView); // Append the detailed view
+                };
+                buttonCell.appendChild(button); // Append button to the row
 
-        // Loop through the sorted rows and create table rows
-        tableRows.forEach(cells => {
-          let newRow = tableBody.insertRow();
-          for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-            // Skip columns 3 (index 2) and 9 (index 8)
-            if (i !== 2 && i !== 8) {
-              let newCell = newRow.insertCell();
-              if (i === 7) {  // Column 8 (index 7) - Make it a link
-                const link = document.createElement('a');
-                link.href = cells[8] || '#';  // Column 9 (index 8) as the link
-                link.target = '_blank';  // Open in a new tab
-                link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
-                newCell.appendChild(link);  // Append the link to the cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
-                }
-              } else {
-                newCell.textContent = cells[i] || ''; // Populate each other cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
+                // Insert other cells for the data
+                for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
+                  // Skip columns 3 (index 2) and 9 (index 8)
+                  if (i !== 2 && i !== 8) {
+                    let newCell = newRow.insertCell();
+                    newCell.textContent = cells[i] || ''; // Populate each cell
+                    if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+                      newCell.style.backgroundColor = tableRowColor;
+                    }
+                  }
                 }
               }
             }
