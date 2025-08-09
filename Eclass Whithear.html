@@ -55,24 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
-    let sheetUrl; // use let so we can change it
-  
-  if( data_source === '0' )
-  {
-    alert( 'whithear' );
-    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
-  }
-  else if( data_source === '1' )
-  {
-    alert( 'ingram' );
-    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJvWxVBHRXUcxuvcR2vQ_DceKuup1Nq3jctXRaqUEKn3WuiTUO9RVsI0Lv8K_KUMH66_OXGTsghW-e/pub?output=csv';
-  }
-  else
-  {
-    alert( 'Default' );
-    sheetUrl = '';
-  }
-      
     
   const proxyUrl = ''; 
   const finalUrl = proxyUrl + sheetUrl;
@@ -287,6 +269,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
