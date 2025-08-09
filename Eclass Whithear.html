@@ -10,6 +10,7 @@
     th, td { white-space: pre-line; padding: 8px; text-align: left; }
     /* show \n as line breaks in cells */
     td, th { white-space: pre-line; }
+    .bold-col { font-weight: 700 !important; }
     .details-row { display: none; background-color: #f9f9f9; }
     .show-hide-btn { cursor: pointer; color: blue; text-decoration: underline; background: transparent; border: none; }
   </style>
@@ -136,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   } 
                   else {
                   if (i === 3) {
-                    newCell.style.fontWeight = '700';
+                    newCell.classList.add('bold-col')
                   }
                   // Just plain text if no URL
                   newCell.textContent = normalize(cells[7]);
@@ -261,6 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
