@@ -118,7 +118,9 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < headerCells.length; i++) {
           if (i !== 0 && i !== 2 && i !== 6 && i !== 8) { // skip same columns as header
             let newCell = newRow.insertCell();
-            
+                if (i === 4) { 
+                    newCell.style.width = '25%';
+                }
                 if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
                   if (cells[8] && cells[8].trim() !== '') 
                   {
@@ -262,6 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
