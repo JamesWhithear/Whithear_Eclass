@@ -53,23 +53,24 @@ document.addEventListener("DOMContentLoaded", function () {
     if (h2) h2.textContent = 'Google Sheets Data – All Classes';
     // NOTE: we DO NOT return; we’ll render all rows when no filter is given
   }
-  
-  let sheetUrl; // use let so we can change it
+
+  const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
+    let sheetUrl; // use let so we can change it
   
   if( data_source === '0' )
   {
     alert( 'whithear' );
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
+    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
   }
   else if( data_source === '1' )
   {
     alert( 'ingram' );
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJvWxVBHRXUcxuvcR2vQ_DceKuup1Nq3jctXRaqUEKn3WuiTUO9RVsI0Lv8K_KUMH66_OXGTsghW-e/pub?output=csv';
+    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJvWxVBHRXUcxuvcR2vQ_DceKuup1Nq3jctXRaqUEKn3WuiTUO9RVsI0Lv8K_KUMH66_OXGTsghW-e/pub?output=csv';
   }
   else
   {
     alert( 'Default' );
-    const sheetUrl = '';
+    sheetUrl = '';
   }
       
     
@@ -286,6 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
