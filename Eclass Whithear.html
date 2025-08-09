@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let headerRow = tableHeader.insertRow();
       let renderedHeaderCount = 0;
       headerCells.forEach((cell, index) => {
-        if (index !== 0 && index !== 2 && index !== 8) {
+        if (index !== 0 && index !== 2 && index !== 6 && index !== 8) {
           let newHeaderCell = headerRow.insertCell();
           newHeaderCell.textContent = normalize(cell); // normalize header too, just in case
           if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tableRows.forEach(cells => {
         let newRow = tableBody.insertRow();
         for (let i = 0; i < headerCells.length; i++) {
-          if (i !== 0 && i !== 2 && i !== 8) { // skip same columns as header
+          if (i !== 0 && i !== 2 && i !== 6 && i !== 8) { // skip same columns as header
             let newCell = newRow.insertCell();
                 if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
                   if (cells[8] && cells[8].trim() !== '') 
@@ -125,7 +125,8 @@ document.addEventListener("DOMContentLoaded", function () {
                       link.target = '_blank';
                       link.rel = 'noopener noreferrer';
                       link.textContent = normalize(cells[7]);
-                    newCell.appendChild(document.createTextNode(normalize(cells[7])));
+                    newCell.appendChild(document.createTextNode(normalize(cells[6])));
+                    newCell.appendChild(document.createElement('br'));
                     newCell.appendChild(document.createElement('br'));
                     newCell.appendChild(link);
                   } 
@@ -253,6 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
