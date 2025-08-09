@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Sheets Data</title>
+  <h2 id="pageTitle">Google Sheets Data</h2>
   <style>
     table {
       width: 100%;
@@ -49,6 +49,8 @@
     const tableHeaderColor = urlParams.get('Table_Header');
     const tableRowColor = urlParams.get('Table_Row');
 
+    
+    
     // Apply background color if valid hex code is provided for the body
     if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
       document.body.style.backgroundColor = backColor;
@@ -56,6 +58,8 @@
 
     if (!classSeperator) {
       console.error("No Class_Seperator parameter in URL.");
+      const h2 = document.getElementById('pageTitle');
+      if (h2) h2.textContent = `Google Sheets Data – ${classSeperator}`;
       return;
     }
 
@@ -234,3 +238,4 @@
 
 </body>
 </html>
+
