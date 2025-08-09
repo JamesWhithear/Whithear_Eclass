@@ -125,9 +125,12 @@ document.addEventListener("DOMContentLoaded", function () {
                       link.target = '_blank';
                       link.rel = 'noopener noreferrer';
                       link.textContent = normalize(cells[7]);
-                    newCell.appendChild(document.createTextNode(normalize(cells[6])));
-                    newCell.appendChild(document.createElement('br'));
-                    newCell.appendChild(document.createElement('br'));
+                    if( cells[6]  !== '')
+                    {
+                      newCell.appendChild(document.createTextNode(normalize(cells[6])));
+                      newCell.appendChild(document.createElement('br'));
+                      newCell.appendChild(document.createElement('br'));
+                    }
                     newCell.appendChild(link);
                   } 
                   else {
@@ -254,6 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
