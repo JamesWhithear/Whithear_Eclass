@@ -1,236 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Sheets Data</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Class</title>
   <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    table, th, td {
-      border: 1px solid black;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
-    .details-row {
-      display: none; /* Hide the details row by default */
-      background-color: #f9f9f9;
-    }
-    .show-hide-btn {
-      cursor: pointer;
-      color: blue;
-      text-decoration: underline;
-    }
+    table { width: 100%; border-collapse: collapse; }
+    table, th, td { border: 1px solid black; }
+    th, td { white-space: pre-line; padding: 8px; text-align: left; }
+    /* show \n as line breaks in cells */
+    td, th { white-space: pre-line; }
+    .bold-col { font-weight: 700 !important; }
+    .details-row { display: none; background-color: #f9f9f9; }
+    .show-hide-btn { cursor: pointer; color: blue; text-decoration: underline; background: transparent; border: none; }
   </style>
 </head>
 <body>
 
-<h2>Google Sheets Data</h2>
+<h2 id="pageTitle">Google Sheets Data</h2>
 
 <table id="dataTable">
-  <thead>
-    <!-- The header will be populated dynamically -->
-  </thead>
-  <tbody>
-    <!-- Data rows will be populated here -->
-  </tbody>
+  <thead></thead>
+  <tbody></tbody>
 </table>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Get the parameters from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const classSeperator = urlParams.get('Class_Seperator');
-    const backColor = urlParams.get('Back_Color');
-    const tableHeaderColor = urlParams.get('Table_Header');
-    const tableRowColor = urlParams.get('Table_Row');
+document.addEventListener("DOMContentLoaded", function () {
+  // Helper to convert <br>, <br/>, <br /> (any case) -> \n
+  const normalize = s => (s || '').replace(/<br\s*\/?>/gi, '\n');
 
-    // Apply background color if valid hex code is provided for the body
-    if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
-      document.body.style.backgroundColor = backColor;
-    }
+  // Get URL params (support the misspelling + correct spelling)
+  const urlParams = new URLSearchParams(window.location.search);
+  const classSeperator = (urlParams.get('Class_Seperator') || urlParams.get('Class_Separator') || '').trim();
+  const hasFilter = !!classSeperator; // if false, we'll show ALL rows instead of returning
+  const data_source      = urlParams.get('Data_Source');
+  const backColor        = urlParams.get('Back_Color');
+  const tableHeaderColor = urlParams.get('Table_Header');
+  const tableRowColor    = urlParams.get('Table_Row');
 
-    if (!classSeperator) {
-      console.error("No Class_Seperator parameter in URL.");
-      return;
-    }
+  // Theme
+  if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
+    document.body.style.backgroundColor = backColor;
+  }
 
-    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
+  // Page title / heading
+  const h2 = document.getElementById('pageTitle');
+  if (hasFilter) {
+    document.title = `Daily Class – ${classSeperator}`;
+    if (h2) h2.textContent = `Google Sheets Data – ${classSeperator}`;
+  } else {
+    document.title = 'Daily Class – All';
+    if (h2) h2.textContent = 'Google Sheets Data – All Classes';
+    // NOTE: we DO NOT return; we’ll render all rows when no filter is given
+  }
+
+  const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
     
-    // Using a CORS proxy to bypass CORS restriction
-    const proxyUrl = ''; // Use proxy if needed
-    const finalUrl = proxyUrl + sheetUrl;
+  const proxyUrl = ''; 
+  const finalUrl = proxyUrl + sheetUrl;
 
-    fetch(finalUrl)
-      .then(response => response.text())
-      .then(data => {
-        // Split the CSV data into rows
-        const rows = data.split('\n');
-        const tableBody = document.querySelector("#dataTable tbody");
-        const tableHeader = document.querySelector("#dataTable thead");
+  fetch(finalUrl)
+    .then(response => response.text())
+    .then(text => {
+      // Normalize line endings and split
+      const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim().length > 0);
+      if (rows.length === 0) return;
 
-        // Extract the header from the first row and set it
-        const headerCells = rows[0].split(',');
-        let headerRow = tableHeader.insertRow();
-        headerCells.forEach((cell, index) => {
-          // Skip columns 3 (index 2) and 9 (index 8)
-          if (index !== 2 && index !== 8) {
-            let newHeaderCell = headerRow.insertCell();
-            newHeaderCell.textContent = cell || ''; // Populate each header cell
+      const tableBody = document.querySelector("#dataTable tbody");
+      const tableHeader = document.querySelector("#dataTable thead");
 
-            if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
-              newHeaderCell.style.backgroundColor = tableHeaderColor;
-            }
+      // Build header (skip columns 3 (index 2) and 9 (index 8))
+      const headerCells = rows[0].split(',');
+      let headerRow = tableHeader.insertRow();
+      let renderedHeaderCount = 0;
+      headerCells.forEach((cell, index) => {
+        if (index !== 0 && index !== 2 && index !== 6 && index !== 8) {
+          let newHeaderCell = headerRow.insertCell();
+          newHeaderCell.textContent = normalize(cell); // normalize header too, just in case
+          if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+            newHeaderCell.style.backgroundColor = tableHeaderColor;
           }
-        });
+          renderedHeaderCount++;
+        }
+      });
 
-        // Prepare the rows for sorting
-        let tableRows = [];
-        
-        rows.slice(1).forEach(row => {  // Skip the first row as it's already used for headers
-          const cells = row.split(',');
-          if (cells.length > 1) {
-            // Check if the value in the first column matches the Class_Seperator parameter
-            if (cells[0] === classSeperator) {
-              // Check if column C is "Yes" (index 2)
-              if (cells[2] === "Yes") {
-                tableRows.push(cells); // Collect rows to be rendered
-              }
-            }
+      // Add Actions column
+      const actionsHeader = headerRow.insertCell();
+      actionsHeader.textContent = 'Actions';
+      if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+        actionsHeader.style.backgroundColor = tableHeaderColor;
+      }
+      renderedHeaderCount++;
+
+      // Collect filtered rows
+      let tableRows = [];
+      rows.slice(1).forEach(row => {
+        const cells = row.split(',');
+        if (cells.length > 1) {
+          // Publish must be "Yes" in col C (index 2)
+          const publishYes = cells[2] === "Yes";
+          // If filter is present, class must match; if not, include all classes
+          const classOk = hasFilter ? (cells[0] === classSeperator) : true;
+          if (publishYes && classOk) {
+            tableRows.push(cells);
           }
-        });
+        }
+      });
 
-        // Sort the rows by the second column (date column) in descending order
-        tableRows.sort((a, b) => {
-          const dateA = new Date(a[1]);  // Assume second column is the date column
-          const dateB = new Date(b[1]);
-          return dateB - dateA;  // Sort by date in descending order (latest first)
-        });
+      // Sort by second column (index 1) descending as dates
+      tableRows.sort((a, b) => {
+        const dateA = new Date(a[1]);
+        const dateB = new Date(b[1]);
+        return dateB - dateA;
+      });
 
-        // Loop through the sorted rows and create table rows
-        tableRows.forEach(cells => {
-          let newRow = tableBody.insertRow();
-          for (let i = 0; i < headerCells.length; i++) {  // Loop through header columns
-            // Skip columns 3 (index 2) and 9 (index 8)
-            if (i !== 2 && i !== 8) {
-              let newCell = newRow.insertCell();
-              if (i === 7) {  // Column 8 (index 7) - Make it a link
-                const link = document.createElement('a');
-                link.href = cells[8] || '#';  // Column 9 (index 8) as the link
-                link.target = '_blank';  // Open in a new tab
-                link.textContent = cells[7] || '';  // Column 8 (index 7) as the link text
-                newCell.appendChild(link);  // Append the link to the cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
+      // Render body
+      tableRows.forEach(cells => {
+        let newRow = tableBody.insertRow();
+        for (let i = 0; i < headerCells.length; i++) {
+          if (i !== 0 && i !== 2 && i !== 6 && i !== 8) { // skip same columns as header
+            let newCell = newRow.insertCell();
+                if (i === 4 || i === 5) { 
+                    newCell.style.width = '25%';
                 }
-              } else {
-                newCell.textContent = cells[i] || ''; // Populate each other cell
-                if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
-                  newCell.style.backgroundColor = tableRowColor;
-                }
-              }
+                if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
+                  if (cells[8] && cells[8].trim() !== '') 
+                  {
+                      const link = document.createElement('a');
+                      link.href = cells[8] || '#';
+                      link.target = '_blank';
+                      link.rel = 'noopener noreferrer';
+                      link.textContent = normalize(cells[7]);
+                    if( cells[6]  !== '')
+                    {
+                      newCell.appendChild(document.createTextNode(normalize(cells[6])));
+                      newCell.appendChild(document.createElement('br'));
+                      newCell.appendChild(document.createElement('br'));
+                    }
+                    newCell.appendChild(link);
+                  } 
+                  else {
+                  if (i === 3) {
+                    newCell.classList.add('bold-col')
+                  }
+                  // Just plain text if no URL
+                  newCell.textContent = normalize(cells[7]);
+                  }
+                }  
+                else {
+              newCell.textContent = normalize(cells[i]);
+            }
+            if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+              newCell.style.backgroundColor = tableRowColor;
             }
           }
+        }
 
-          // Add a "Show/Hide Details" button in the last cell
-          const buttonCell = newRow.insertCell();
-          const button = document.createElement('button');
-          button.textContent = 'Show Details';
-          button.classList.add('show-hide-btn');
-          button.addEventListener('click', function() {
-            const detailsRow = newRow.nextElementSibling; // The next row is the details row
-            if (detailsRow && detailsRow.classList.contains('details-row')) {
-              const isHidden = detailsRow.style.display === 'none';
-              detailsRow.style.display = isHidden ? 'table-row' : 'none';
-              button.textContent = isHidden ? 'Hide Details' : 'Show Details';
-            }
-          });
+        // Actions cell with toggle button
+        const buttonCell = newRow.insertCell();
+        const button = document.createElement('button');
+        button.textContent = 'Show Details';
+        button.classList.add('show-hide-btn');
+        buttonCell.appendChild(button);
 
-          buttonCell.appendChild(button);
+        // Details row (immediately after)
+        let detailsRow = tableBody.insertRow();
+        detailsRow.classList.add('details-row');
+        detailsRow.style.display = 'none'; // set initial inline state
+        const detailsCell = detailsRow.insertCell();
+        detailsCell.colSpan = renderedHeaderCount;
 
-          // Add the details row right after the main row
-          let detailsRow = tableBody.insertRow();
-          detailsRow.classList.add('details-row'); // Add a class for styling
-          const detailsCell = detailsRow.insertCell();
-          detailsCell.colSpan = headerCells.length; // Make the details cell span across all columns
+        // Prepare normalized values for details
+        const title       = normalize(cells[3]);
+        const aks         = normalize(cells[4]);
+        const activating  = normalize(cells[5]);
+        const mini        = normalize(cells[6]);
+        const linkText    = normalize(cells[7]);
+        const linkUrl     = (cells[8] || '#');
+        const showDo      = normalize(cells[9]);
 
-          // Concatenate columns 4, 5, 6, 7, 8, and 10 with a carriage return between each section
-          let additionalDetails = ` 
-
-<table style="margin: 0 auto; border: none; text-align: center; ">
-<thead>
+        // Build details HTML
+        let additionalDetails = `
+<table style="margin: 0 auto; border: none; text-align: center;">
+  <thead>
     <tr>
-      <th style="background-color: transparent; border: none;"></th>
-      <th colspan="4" style="margin: 0 auto; border: none;  border-right: 1px solid black;  border-top: 1px solid black;  text-align: center; background-color: lightgray;" >
-          <h1>${cells[3] || ''}</h1> <br>
-          <strong>AKS:</strong> ${cells[4] || ''} <br>
+      <th width="10%" style="background-color: transparent; border: none;"></th>
+      <th width="80%" colspan="4" style="margin: 0 auto; border: none;  border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; text-align: center; background-color: lightgray;">
+        <h1 style="white-space: pre-line;">${title}</h1>
+        <strong>AKS:</strong> <span style="white-space: pre-line;">${aks}</span><br>
       </th>
-      <th style="background-color: transparent; border: none;"></th>
+      <th width="10%" style="background-color: transparent; border: none;"></th>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-left: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-right: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+    </tr>
 
     <tr>
-      <td width="10%" style="background-color: transparent; border: none;">  </td>
-      <td width="20%" style="background-color: white; border: none; border-left: 1px solid black;">  </td>
-      <td width="20%" style="background-color: White; border: none;">  </td>
-      <td width="20%" style="background-color: White; border: none;">  </td>
-      <td width="20%" style="background-color: white; border: none; border-right: 1px solid black;">  </td>
-      <td width="10%" style="background-color: transparent; border: none;">  </td>
-    </tr>
-  
-    <tr>
-      <td style="background-color: transparent; border: none;">  </td>
-      <td style="background-color: white; text-align: center;  border: none; border-left: 1px solid black; " colspan="2" width="50%">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2> <br> ${cells[5] || ''} <br> </td>  
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; text-align: left; border: none; border-left: 1px solid black;" ></td>
       
-      <td style="background-color: white; text-align: center;  border: none; border-right: 1px solid black; " colspan="2" width="50%">  <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Practice%20Icon.png" alt="" title="">&nbsp;Mini-Lesson</h2> <br> ${cells[6] || ''} <br><a href="${cells[8] || '#'}" target="_blank">${cells[7] || ''}</a> <br> </td>
-      <td style="background-color: transparent; border: none;">  </td>
+      <td width="30%" style="background-color: white; text-align: left; padding-left: 5%; vertical-align: top; border: none;">
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;&nbsp;&nbsp;Activating Strategy</h2>
+        <div style="white-space: pre-line;">${activating}</div>
+      </td>
+      <td width="30%" style="background-color: white; text-align: Left; padding-left: 5%; vertical-align: top; border: none; ">
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Practice%20Icon.png" alt="" title="">&nbsp;&nbsp;&nbsp;Mini-Lesson</h2>
+        <div style="white-space: pre-line;">${mini}</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+        <a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>
+      </td>
+      <td width="10%" style="background-color: white; text-align: left; border: none; border-right: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
     </tr>
 
-    
     <tr>
-      <td width="10%" style="background-color: transparent; border: none;">  </td>
-      <td width="20%" style="background-color: white; border: none; border-left: 1px solid black;">  </td>
-      <td width="20%" style="background-color: White; border: none;">  </td>
-      <td width="20%" style="background-color: White; border: none;">  </td>
-      <td width="20%" style="background-color: white; border: none; border-right: 1px solid black;">  </td>
-      <td width="10%" style="background-color: transparent; border: none;">  </td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-left: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-right: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
     </tr>
 
-    
     <tr>
-      <td style="background-color: transparent; border: none;">  </td>
-      <td style="background-color: White; border: none; border-left: 1px solid black; ">  </td>
-      <td colspan="2" style="background-color: lightgray; border: none; text-align: center;" > <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Show%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2> <br> ${cells[9] || ''} <br> </td>
-      <td style="background-color: White; border: none; border-right: 1px solid black; ">  </td>
-      <td style="background-color: transparent; border: none;">  </td>
+      <td style="background-color: transparent; border: none;"></td>
+      <td style="background-color: white; border: none; border-left: 1px solid black;"></td>
+      <td colspan="2" style="background-color: lightgray; border: none; text-align: center;">
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Show%20Icon.png" alt="" title="">&nbsp;&nbsp;&nbsp;Independent Learning Assignment</h2>
+        <div style="white-space: pre-line;">${showDo}</div><br>
+      </td>
+      <td style="background-color: white; border: none; border-right: 1px solid black;"></td>
+      <td style="background-color: transparent; border: none;"></td>
     </tr>
-    
+
     <tr>
-      <td width="10%" style="background-color: transparent; border: none;">  </td>
-      <td width="20%" style="background-color: white; border: none; border-left: 1px solid black; border-bottom: 1px solid black;">  </td>
-      <td width="20%" style="background-color: White; border: none; border-bottom: 1px solid black;">  </td>
-      <td width="20%" style="background-color: White; border: none; border-bottom: 1px solid black;">  </td>
-      <td width="20%" style="background-color: white; border: none; border-right: 1px solid black; border-bottom: 1px solid black;">  </td>
-      <td width="10%" style="background-color: transparent; border: none;">  </td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-left: 1px solid black; border-bottom: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none; border-bottom: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none; border-bottom: 1px solid black;"></td>
+      <td width="10%" style="background-color: white; border: none; border-right: 1px solid black; border-bottom: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
     </tr>
-    
   </tbody>
 </table>
-          `;
-          
-          detailsCell.innerHTML = additionalDetails.trim();  // Set the concatenated details content
+      `;
+
+        detailsCell.innerHTML = additionalDetails.trim();
+
+        // Toggle handler (uses computed style so it works on first click)
+        button.addEventListener('click', function () {
+          const isHidden = getComputedStyle(detailsRow).display === 'none';
+          detailsRow.style.display = isHidden ? 'table-row' : 'none';
+          button.textContent = isHidden ? 'Hide Details' : 'Show Details';
         });
-      })
-      .catch(error => {
-        console.error("Error fetching the Google Sheet data:", error);
       });
-  });
+    })
+    .catch(error => {
+      console.error("Error fetching the Google Sheet data:", error);
+    });
+});
 </script>
 
 </body>
 </html>
+
