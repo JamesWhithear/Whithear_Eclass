@@ -117,7 +117,11 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < headerCells.length; i++) {
           if (i !== 0 && i !== 2 && i !== 6 && i !== 8) { // skip same columns as header
             let newCell = newRow.insertCell();
-                if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
+
+                if (i === 3) {
+                  newCell.style.fontWeight = 'bold';
+                }
+                else if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
                   if (cells[8] && cells[8].trim() !== '') 
                   {
                       const link = document.createElement('a');
@@ -257,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
