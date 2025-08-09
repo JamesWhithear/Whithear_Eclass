@@ -117,13 +117,17 @@ document.addEventListener("DOMContentLoaded", function () {
         for (let i = 0; i < headerCells.length; i++) {
           if (i !== 0 && i !== 2 && i !== 8) { // skip same columns as header
             let newCell = newRow.insertCell();
-            if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
-              const link = document.createElement('a');
-              link.href = cells[8] || '#';
-              link.target = '_blank';
-              link.rel = 'noopener noreferrer';
-              link.textContent = normalize(cells[7]);
-              newCell.appendChild(link);
+                if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
+                  if (cells[8] && cells[8].trim() !== '') {
+                  const link = document.createElement('a');
+                  link.href = cells[8] || '#';
+                  link.target = '_blank';
+                  link.rel = 'noopener noreferrer';
+                  link.textContent = normalize(cells[7]);
+                  newCell.appendChild(link);
+                } else {
+                  // Just plain text if no URL
+                  newCell.textContent = normalize(cells[7]);
             } else {
               newCell.textContent = normalize(cells[i]);
             }
@@ -243,5 +247,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
