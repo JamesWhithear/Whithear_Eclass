@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim().length > 0);
       if (rows.length === 0) return;
 
-      const tableBody = document.querySelector("#dataTable tbody").replace(/<br\s*\/?>/gi, '\n');
+      const tableBody = document.querySelector("#dataTable tbody");
       const tableHeader = document.querySelector("#dataTable thead");
 
       // Build header (skip columns 3 (index 2) and 9 (index 8))
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
               link.textContent = cells[7] || '';
               newCell.appendChild(link);
             } else {
-              newCell.textContent = cells[i] || '';
+              newCell.textContent = (cells[i] || '').replace(/<br\s*\/?>/gi, '\n');
             }
             if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
               newCell.style.backgroundColor = tableRowColor;
@@ -229,6 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
