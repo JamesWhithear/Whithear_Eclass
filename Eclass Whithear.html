@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const classSeperator = (urlParams.get('Class_Seperator') || urlParams.get('Class_Separator') || '').trim();
   const hasFilter = !!classSeperator; // if false, we'll show ALL rows instead of returning
   const data_source      = urlParams.get('Data_Source');
-  alert(  data_source ) ;
   const backColor        = urlParams.get('Back_Color');
   const tableHeaderColor = urlParams.get('Table_Header');
   const tableRowColor    = urlParams.get('Table_Row');
@@ -54,14 +53,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (h2) h2.textContent = 'Google Sheets Data – All Classes';
     // NOTE: we DO NOT return; we’ll render all rows when no filter is given
   }
-  
+  alert( 'Step 1' );
   const sheetUrl = '';
-  if( data_source == '1' )
+  if( data_source === '0' )
   {
+    alert( 'whithear' );
     sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
   }
-  else if( data_source == '2' )
+  else if( data_source === '1' )
   {
+    alert( 'ingram' );
     sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRJvWxVBHRXUcxuvcR2vQ_DceKuup1Nq3jctXRaqUEKn3WuiTUO9RVsI0Lv8K_KUMH66_OXGTsghW-e/pub?output=csv';
   }
      
@@ -280,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
