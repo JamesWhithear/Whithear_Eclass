@@ -125,7 +125,9 @@ document.addEventListener("DOMContentLoaded", function () {
                       link.target = '_blank';
                       link.rel = 'noopener noreferrer';
                       link.textContent = normalize(cells[7]);
-                      newCell.appendChild('James/n/n' || link);
+                    newCell.appendChild(document.createTextNode(normalize(cells[7])));
+                    newCell.appendChild(document.createElement('br'));
+                    newCell.appendChild(link);
                   } 
                   else {
                   // Just plain text if no URL
@@ -251,6 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
