@@ -135,8 +135,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     newCell.appendChild(link);
                   } 
                   else {
-                  
-                  newCell.style.fontWeight = 'bold';
+                  if (i === 3) {
+                    newCell.style.fontWeight = '700';
+                  }
                   // Just plain text if no URL
                   newCell.textContent = normalize(cells[7]);
                   }
@@ -260,6 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
