@@ -136,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Details row (immediately after)
         let detailsRow = tableBody.insertRow();
         detailsRow.classList.add('details-row');
+        detailsRow.style.display = 'none'; // ensure inline state matches CSS
         const detailsCell = detailsRow.insertCell();
 
         // FIX: colspan should equal number of rendered columns in this row
@@ -228,3 +229,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
