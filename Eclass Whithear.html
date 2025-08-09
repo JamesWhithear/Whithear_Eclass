@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim().length > 0);
       if (rows.length === 0) return;
 
-      const tableBody = document.querySelector("#dataTable tbody");
+      const tableBody = document.querySelector("#dataTable tbody").replace(/<br\s*\/?>/gi, '\n');
       const tableHeader = document.querySelector("#dataTable thead");
 
       // Build header (skip columns 3 (index 2) and 9 (index 8))
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <tr>
       <td style="background-color: transparent; border: none;"></td>
       <td style="background-color: white; text-align: center; border: none; border-left: 1px solid black;" colspan="2" width="50%">
-        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Independent Learning Assignment</h2><br>
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2><br>
         ${cells[5] || ''}<br>
       </td>
       <td style="background-color: white; text-align: center; border: none; border-right: 1px solid black;" colspan="2" width="50%">
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <td style="background-color: transparent; border: none;"></td>
       <td style="background-color: white; border: none; border-left: 1px solid black;"></td>
       <td colspan="2" style="background-color: lightgray; border: none; text-align: center;">
-        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Show%20Icon.png" alt="" title="">&nbsp;Activating Strategy</h2><br>
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Show%20Icon.png" alt="" title="">&nbsp;Independent Learning Assignment</h2><br>
         ${cells[9] || ''}<br>
       </td>
       <td style="background-color: white; border: none; border-right: 1px solid black;"></td>
@@ -229,5 +229,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
