@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
               link.textContent = cells[7] || '';
               newCell.appendChild(link);
             } else {
-              newCell.textContent = normalize(cells[i].replace(/<br\s*\/?>/gi, '\n'));
+              newCell.textContent = normalize(cells[i].replace('<br>', '\n'));
             }
             if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
               newCell.style.backgroundColor = tableRowColor;
@@ -229,6 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
 
 
 
