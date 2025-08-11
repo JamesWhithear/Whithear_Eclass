@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Class</title>
+  <style>
+    table { width: 100%; border-collapse: collapse; }
+    table, th, td { border: 1px solid black; }
+    th, td { white-space: pre-line; padding: 8px; text-align: left; }
+    /* show \n as line breaks in cells */
+    td, th { white-space: pre-line; }
+    .bold-col { font-weight: 700 !important; }
+    .details-row { display: none; background-color: #f9f9f9; }
+    .show-hide-btn { cursor: pointer; color: blue; text-decoration: underline; background: transparent; border: none; }
+  </style>
+</head>
+<body>
+
+<h2 id="pageTitle">Google Sheets Data</h2>
+
+<table id="dataTable">
+  <thead></thead>
+  <tbody></tbody>
+</table>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Helper to convert <br>, <br/>, <br /> (any case) -> \n
+  const normalize = s => (s || '').replace(/<br\s*\/?>/gi, '\n');
+
+  // Get URL params (support the misspelling + correct spelling)
+  const urlParams = new URLSearchParams(window.location.search);
+  const classSeperator = (urlParams.get('Class_Seperator') || urlParams.get('Class_Separator') || '').trim();
+  const hasFilter = !!classSeperator; // if false, we'll show ALL rows instead of returning
+  const data_source      = urlParams.get('Data_Source');
+  const backColor        = urlParams.get('Back_Color');
+  const tableHeaderColor = urlParams.get('Table_Header');
+  const tableRowColor    = urlParams.get('Table_Row');
+
+  // Theme
+  if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
+    document.body.style.backgroundColor = backColor;
+  }
+
+  // Page title / heading
+  const h2 = document.getElementById('pageTitle');
+  if (hasFilter) {
+    document.title = `Daily Class – ${classSeperator}`;
+    if (h2) h2.textContent = `Google Sheets Data – ${classSeperator}`;
+  } else {
+    document.title = 'Daily Class – All';
+    if (h2) h2.textContent = 'Google Sheets Data – All Classes';
+    // NOTE: we DO NOT return; we’ll render all rows when no filter is given
+  }
+
+  const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTT0PFAgDVj5MWaS9of09p8nXlxUSXm9KyUlnJu9LeGbLm4QaslGQtCFJa81m6UHDpiqbmgyEZWBsys/pub?output=csv';
+
+  const proxyUrl = '';
+  const finalUrl = proxyUrl + sheetUrl;
+
+  fetch(finalUrl)
+    .then(response => response.text())
+    .then(text => {
+      // Normalize line endings and split
+      const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim().length > 0);
+      if (rows.length === 0) return;
+
+      const tableBody = document.querySelector("#dataTable tbody");
+      const tableHeader = document.querySelector("#dataTable thead");
+
+      // Build header (skip columns 3 (index 2) and 9 (index 8))
+      const headerCells = rows[0].split(',');
+      let headerRow = tableHeader.insertRow();
+      let renderedHeaderCount = 0;
+      headerCells.forEach((cell, index) => {
+        if (index !== 0 && index !== 2 && index !== 6 && index !== 8) {
+          let newHeaderCell = headerRow.insertCell();
+          newHeaderCell.textContent = normalize(cell); // normalize header too, just in case
+          if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+            newHeaderCell.style.backgroundColor = tableHeaderColor;
+          }
+          renderedHeaderCount++;
+        }
+      });
+
+      // Add Actions column
+      const actionsHeader = headerRow.insertCell();
+      actionsHeader.textContent = 'Actions';
+      if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+        actionsHeader.style.backgroundColor = tableHeaderColor;
+      }
+      renderedHeaderCount++;
+
+      // Collect filtered rows
+      let tableRows = [];
+      rows.slice(1).forEach(row => {
+        const cells = row.split(',');
+        if (cells.length > 1) {
+          // Publish must be "Yes" in col C (index 2)
+          const publishYes = cells[2] === "Yes";
+          // If filter is present, class must match; if not, include all classes
+          const classOk = hasFilter ? (cells[0] === classSeperator) : true;
+          if (publishYes && classOk) {
+            tableRows.push(cells);
+          }
+        }
+      });
+
+      // Sort by second column (index 1) descending as dates
+      tableRows.sort((a, b) => {
+        const dateA = new Date(a[1]);
+        const dateB = new Date(b[1]);
+        return dateB - dateA;
+      });
+
+      // Render body
+      tableRows.forEach(cells => {
+        let newRow = tableBody.insertRow();
+        for (let i = 0; i < headerCells.length; i++) {
+          if (i !== 0 && i !== 2 && i !== 6 && i !== 8) { // skip same columns as header
+            let newCell = newRow.insertCell();
+                if (i === 4 || i === 5) {
+                    newCell.style.width = '25%';
+                }
+                if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
+                  if (cells[8] && cells[8].trim() !== '')
+                  {
+                      const link = document.createElement('a');
+                      link.href = cells[8] || '#';
+                      link.target = '_blank';
+                      link.rel = 'noopener noreferrer';
+                      link.textContent = normalize(cells[7]);
+                    if( cells[6]  !== '')
+                    {
+                      newCell.appendChild(document.createTextNode(normalize(cells[6])));
+                      newCell.appendChild(document.createElement('br'));
+                      newCell.appendChild(document.createElement('br'));
+                    }
+                    newCell.appendChild(link);
+                  }
+                  else {
+                  if (i === 3) {
+                    newCell.classList.add('bold-col')
+                  }
+                  // Just plain text if no URL
+                  newCell.textContent = normalize(cells[7]);
+                  }
+                }
+                else {
+              newCell.textContent = normalize(cells[i]);
+            }
+            if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+              newCell.style.backgroundColor = tableRowColor;
+            }
+          }
+        }
+
+        // Actions cell with toggle button
+        const buttonCell = newRow.insertCell();
+        const button = document.createElement('button');
+        button.textContent = 'Show Details';
+        button.classList.add('show-hide-btn');
+        buttonCell.appendChild(button);
+
+        // Details row (immediately after)
+        let detailsRow = tableBody.insertRow();
+        detailsRow.classList.add('details-row');
+        detailsRow.style.display = 'none'; // set initial inline state
+        const detailsCell = detailsRow.insertCell();
+        detailsCell.colSpan = renderedHeaderCount;
+
+        // Prepare normalized values for details
+        const title       = normalize(cells[3]);
+        const aks         = normalize(cells[4]);
+        const activating  = normalize(cells[5]);
+        const mini        = normalize(cells[6]);
+        const linkText    = normalize(cells[7]);
+        const linkUrl     = (cells[8] || '#');
+        const showDo      = normalize(cells[9]);
+
+        // Build details HTML
+        let additionalDetails = `
+<table style="margin: 0 auto; border: none; text-align: center;">
+  <thead>
+    <tr>
+      <th width="10%" style="background-color: transparent; border: none;"></th>
+      <th width="80%" colspan="4" style="margin: 0 auto; border: none;  border-left: 1px solid black; border-right: 1px solid black; border-top: 1px solid black; text-align: center; background-color: lightgray;">
+        <h1 style="white-space: pre-line;">${title}</h1>
+        <strong>AKS:</strong> <span style="white-space: pre-line;">${aks}</span><br>
+      </th>
+      <th width="10%" style="background-color: transparent; border: none;"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-left: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-right: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+    </tr>
+
+    <tr>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; text-align: left; border: none; border-left: 1px solid black;" ></td>
+
+      <td width="30%" style="background-color: white; text-align: left; padding-left: 5%; vertical-align: top; border: none;">
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Learn%20Icon.png" alt="" title="">&nbsp;&nbsp;&nbsp;Activating Strategy</h2>
+        <div style="white-space: pre-line;">${activating}</div>
+      </td>
+      <td width="30%" style="background-color: white; text-align: Left; padding-left: 5%; vertical-align: top; border: none; ">
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Practice%20Icon.png" alt="" title="">&nbsp;&nbsp;&nbsp;Mini-Lesson</h2>
+        <div style="white-space: pre-line;">${mini}</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+        <a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>
+      </td>
+      <td width="10%" style="background-color: white; text-align: left; border: none; border-right: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+    </tr>
+
+    <tr>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-left: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="30%" style="background-color: white; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-right: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+    </tr>
+
+    <tr>
+      <td style="background-color: transparent; border: none;"></td>
+      <td style="background-color: white; border: none; border-left: 1px solid black;"></td>
+      <td colspan="2" style="background-color: lightgray; border: none; text-align: center;">
+        <h2><img src="https://jameswhithear.github.io/Whithear_Eclass/Show%20Icon.png" alt="" title="">&nbsp;&nbsp;&nbsp;Independent Learning Assignment</h2>
+        <div style="white-space: pre-line;">${showDo}</div><br>
+      </td>
+      <td style="background-color: white; border: none; border-right: 1px solid black;"></td>
+      <td style="background-color: transparent; border: none;"></td>
+    </tr>
+
+    <tr>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+      <td width="10%" style="background-color: white; border: none; border-left: 1px solid black; border-bottom: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none; border-bottom: 1px solid black;"></td>
+      <td width="30%" style="background-color: white; border: none; border-bottom: 1px solid black;"></td>
+      <td width="10%" style="background-color: white; border: none; border-right: 1px solid black; border-bottom: 1px solid black;"></td>
+      <td width="10%" style="background-color: transparent; border: none;"></td>
+    </tr>
+  </tbody>
+</table>
+      `;
+
+        detailsCell.innerHTML = additionalDetails.trim();
+
+        // Toggle handler (uses computed style so it works on first click)
+        button.addEventListener('click', function () {
+          const isHidden = getComputedStyle(detailsRow).display === 'none';
+          detailsRow.style.display = isHidden ? 'table-row' : 'none';
+          button.textContent = isHidden ? 'Hide Details' : 'Show Details';
+        });
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching the Google Sheet data:", error);
+    });
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
