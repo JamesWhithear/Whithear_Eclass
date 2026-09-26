@@ -633,8 +633,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // This uses the same published Google Sheet, but requests Sheet2 by name.
     // A second candidate is included in case the tab is named "Sheet 2".
     const sheet2Urls = [
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&sheet=Sheet2&_=' + Date.now(),
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&sheet=Sheet%202&_=' + Date.now()
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&gid=796863577&_=' + Date.now()
     ];
 
     for (const url of sheet2Urls) {
