@@ -423,6 +423,42 @@
       white-space: nowrap;
     }
 
+  
+    #failingRawDataPanel {
+      position: absolute;
+      left: 14px;
+      top: calc(50vh + 65px);
+      width: min(52vw, 900px);
+      max-height: calc(50vh - 80px);
+      background: var(--row-color, #FFFFFF);
+      border: 1px solid var(--header-dark-color, #CC8400);
+      border-radius: 18px;
+      overflow: hidden;
+      box-sizing: border-box;
+      color: #000;
+    }
+
+    #failingRawDataTitle {
+      background: var(--header-color, #FFA500);
+      color: #000;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--header-dark-color, #CC8400);
+    }
+
+    #failingRawData {
+      margin: 0;
+      padding: 12px;
+      max-height: calc(50vh - 125px);
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #000;
+      background: var(--row-color, #FFFFFF);
+      font-size: 0.9rem;
+      line-height: 1.25;
+    }
+
   </style>
 </head>
 <body>
@@ -1207,6 +1243,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 
+  const failingRawData = document.getElementById('failingRawData');
+
   const failingStudentClassEls = [
     document.getElementById('fail-class-0'),
     document.getElementById('fail-class-1'),
@@ -1288,6 +1326,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const csvText = await response.text();
+
+      // Debug: show the exact raw response from Google Sheets.
+      failingRawData.textContent = csvText || '[Empty response]';
+
       const rows = parseCSV(csvText);
 
       const items = [];
@@ -1315,6 +1357,8 @@ document.addEventListener("DOMContentLoaded", function () {
       renderFailingStudents(items);
     } catch (err) {
       console.error('Failing students download failed:', err);
+      failingRawData.textContent =
+        'ERROR LOADING CSV:\n' + (err?.message || String(err));
       renderFailingStudents([]);
     }
   }
@@ -1369,6 +1413,12 @@ document.addEventListener("DOMContentLoaded", function () {
       <div class="failing-value" id="fail-value-5"># (X%)</div>
     </div>
   </div>
+</div>
+
+
+<div id="failingRawDataPanel" aria-label="Failing students raw CSV data">
+  <div id="failingRawDataTitle">Raw Failing Students Data</div>
+  <pre id="failingRawData">Waiting for data...</pre>
 </div>
 
 </body>
