@@ -58,13 +58,13 @@
     }
 
     #date {
-      margin-top: 12px;
+      margin-top: 4px;
       color: #d8def3;
       font-size: clamp(1rem, 1.6vw, 1.5rem);
     }
 
     #countdownBox {
-      margin-top: 18px;
+      margin-top: 8px;
       padding: 16px;
       background: var(--panel-color, #1d2540);
       border: 1px solid var(--header-color, #3b496f);
@@ -243,6 +243,12 @@
       color: #000 !important;
     }
 
+  
+    #dataTable thead th,
+    #dataTable thead td {
+      font-size: 1.25rem;
+    }
+
   </style>
 </head>
 <body>
@@ -253,8 +259,9 @@
 
   <div id="countdownBox">
     <div class="clock-label">
-      Time until <span id="alarmName">next alarm</span> — <span id="targetLabel">--</span>
+      Time until <span id="alarmName">next alarm</span>
     </div>
+    <span id="targetLabel" style="display:none;">--</span>
     <div id="remaining">--:--:--</div>
     <div id="next" role="button" tabindex="0" aria-expanded="false" aria-controls="timerExtras"></div>
 
