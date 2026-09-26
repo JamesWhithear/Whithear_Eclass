@@ -156,13 +156,6 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
 
-        // Actions cell with toggle button
-        const buttonCell = newRow.insertCell();
-        const button = document.createElement('button');
-        button.textContent = 'Show Details';
-        button.classList.add('show-hide-btn');
-        buttonCell.appendChild(button);
-
         // Details row (immediately after)
         let detailsRow = tableBody.insertRow();
         detailsRow.classList.add('details-row');
