@@ -1,179 +1,109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Clock and Alarm Countdown</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Class</title>
   <style>
-    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; min-height: 100%; }
+    body { min-height: 100vh; position: relative; }
 
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: #101427;
+    #dataTable {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: calc(50vw - 20px);
+      max-width: calc(50vw - 20px);
+      border-collapse: collapse;
     }
 
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
+    table, th, td { border: 1px solid black; }
+    th, td { white-space: pre-line; padding: 8px; text-align: left; }
+    /* show \n as line breaks in cells */
+    td, th { white-space: pre-line; }
+    .bold-col { font-weight: 700 !important; }
+  
+    #clockPanel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: calc(50vw - 20px);
+      height: calc(50vh - 20px);
+      overflow: auto;
+      box-sizing: border-box;
+      padding: 18px;
+      background: #101427;
       color: #f7f8ff;
       font-family: Arial, Helvetica, system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-
-    main {
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
       text-align: center;
-      padding: 16px 18px 36px;
     }
 
-    main > section:first-child {
-      width: 100%;
-    }
-
-    .label {
+    #clockPanel .clock-label {
       color: #a8bdf7;
       text-transform: uppercase;
-      letter-spacing: .28em;
-      font-size: clamp(1rem, 2.05vw, 1.75rem);
+      letter-spacing: .18em;
+      font-size: clamp(.8rem, 1.3vw, 1.2rem);
       font-weight: 750;
-      line-height: 1.25;
     }
 
     #clock {
-      margin-top: 38px;
+      margin-top: 12px;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(5.5rem, 13.4vw, 12.7rem);
-      line-height: .92;
+      font-size: clamp(3rem, 6vw, 6rem);
+      line-height: 1;
       font-weight: 800;
-      letter-spacing: -.055em;
       white-space: nowrap;
-      color: #f7f8ff;
     }
 
     #date {
+      margin-top: 12px;
       color: #d8def3;
-      font-size: clamp(1.7rem, 3.05vw, 2.65rem);
-      line-height: 1.15;
-      margin-top: 34px;
-      font-weight: 400;
+      font-size: clamp(1rem, 1.6vw, 1.5rem);
     }
 
-    .countdown {
-      width: min(79vw, 1065px);
-      min-height: 0;
-      margin-top: 46px;
-      padding: 42px 54px 24px;
+    #countdownBox {
+      margin-top: 18px;
+      padding: 16px;
       background: #1d2540;
       border: 1px solid #3b496f;
-      border-radius: 31px;
-      box-shadow: none;
-    }
-
-    .countdown > .label {
-      font-size: clamp(1rem, 2.05vw, 1.78rem);
-      letter-spacing: .25em;
-      white-space: normal;
-    }
-
-    #alarmName,
-    #targetLabel {
-      white-space: nowrap;
+      border-radius: 18px;
     }
 
     #remaining {
-      margin-top: 18px;
+      margin-top: 10px;
       color: #96e4d7;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(4.2rem, 7.7vw, 6.5rem);
-      line-height: .98;
+      font-size: clamp(2.2rem, 4vw, 4rem);
       font-weight: 760;
-      letter-spacing: -.035em;
+      line-height: 1;
     }
 
     #next {
-      margin-top: 16px;
+      margin-top: 10px;
       color: #d2daf2;
-      font-size: clamp(1.05rem, 1.85vw, 1.52rem);
-      line-height: 1.3;
-      font-weight: 400;
+      font-size: clamp(.8rem, 1.1vw, 1rem);
     }
 
-    @media (max-width: 900px) {
-      main { padding-top: 18px; }
-      #clock { margin-top: 30px; }
-      #date { margin-top: 24px; }
-      .countdown {
-        width: min(92vw, 1065px);
-        margin-top: 38px;
-        padding: 34px 24px 22px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .label { letter-spacing: .20em; }
-      #clock {
-        font-size: 15vw;
-        margin-top: 24px;
-      }
-      #date {
-        font-size: 1.45rem;
-        margin-top: 20px;
-      }
-      .countdown {
-        width: 94vw;
-        margin-top: 30px;
-        border-radius: 24px;
-        padding: 28px 16px 20px;
-      }
-      .countdown > .label {
-        font-size: .92rem;
-        letter-spacing: .16em;
-      }
-      #remaining { font-size: 15vw; }
-      #next { font-size: 1rem; }
-    }
-  
     #scheduleLink {
       display: inline-block;
-      margin-top: 18px;
+      margin-top: 12px;
       color: #a8bdf7;
-      font-size: clamp(1rem, 1.55vw, 1.2rem);
       font-weight: 700;
       text-decoration: underline;
-      text-underline-offset: 4px;
       cursor: pointer;
     }
 
     #schedulePanel {
       display: none;
-      width: min(79vw, 1065px);
-      margin-top: 18px;
-      padding: 24px 30px;
+      margin-top: 12px;
+      padding: 12px;
       background: #1d2540;
       border: 1px solid #3b496f;
-      border-radius: 22px;
+      border-radius: 14px;
       text-align: left;
     }
 
-    #schedulePanel.show {
-      display: block;
-    }
-
-    #schedulePanel h3 {
-      margin: 0 0 16px;
-      color: #a8bdf7;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: .18em;
-      font-size: 1rem;
-    }
+    #schedulePanel.show { display: block; }
 
     #scheduleList {
       margin: 0;
@@ -185,15 +115,12 @@
       display: flex;
       justify-content: space-between;
       gap: 20px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(168, 189, 247, .16);
-      color: #f7f8ff;
-      font-size: 1.05rem;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(168,189,247,.16);
+      font-size: .9rem;
     }
 
-    #scheduleList li:last-child {
-      border-bottom: 0;
-    }
+    #scheduleList li:last-child { border-bottom: 0; }
 
     #scheduleList .alarm-time {
       color: #96e4d7;
@@ -201,466 +128,550 @@
       font-weight: 700;
     }
 
-    @media (max-width: 900px) {
-      #schedulePanel {
-        width: min(92vw, 1065px);
-      }
-    }
-
-    @media (max-width: 560px) {
-      #schedulePanel {
-        width: 94vw;
-        padding: 20px 18px;
-      }
-      #scheduleList li {
-        font-size: .98rem;
-      }
-    }
-
-      #downloadStatus {
-      margin-top: 10px;
-      color: #c0c9e4;
-      font-size: clamp(.9rem, 1.3vw, 1rem);
-      text-align: center;
-    }
-
+    #downloadStatus,
     #audioDebug {
-      margin-top: 6px;
+      margin-top: 7px;
       color: #c0c9e4;
-      font-size: clamp(.85rem, 1.15vw, .95rem);
-      text-align: center;
+      font-size: .75rem;
     }
 
   </style>
 </head>
 <body>
-  <main>
-    <section aria-label="Current time">
-      <div class="label">Current time</div>
-      <div id="clock">--:--:--</div>
-      <div id="date"></div>
-    </section>
-    <section class="countdown" aria-label="Alarm countdown">
-      <div class="label">Time until <span id="alarmName">next alarm</span> — <span id="targetLabel">--</span></div>
-      <div id="remaining" role="timer">--:--:--</div>
-      <div id="next"></div>
+
+<div id="clockPanel">
+  <div class="clock-label">Current time</div>
+  <div id="clock">--:--</div>
+  <div id="date"></div>
+
+  <div id="countdownBox">
+    <div class="clock-label">
+      Time until <span id="alarmName">next alarm</span> — <span id="targetLabel">--</span>
+    </div>
+    <div id="remaining">--:--:--</div>
+    <div id="next"></div>
 
     <a id="scheduleLink" href="#" aria-expanded="false" aria-controls="schedulePanel">Check Schedules</a>
     <div id="downloadStatus">Downloaded file: 0 records — Pending</div>
     <div id="audioDebug">AudioContext: not created</div>
-<section id="schedulePanel" aria-label="All alarm schedules">
-      <h3>Alarm Schedules</h3>
+
+    <div id="schedulePanel">
       <ul id="scheduleList"></ul>
-    </section>
-</section>
-  </main>
-  <script>
-const clock = document.getElementById('clock');
-    const date = document.getElementById('date');
-    const remaining = document.getElementById('remaining');
-    const next = document.getElementById('next');
-    const targetLabel = document.getElementById('targetLabel');
-    const scheduleLink = document.getElementById('scheduleLink');
-    const schedulePanel = document.getElementById('schedulePanel');
-    const scheduleList = document.getElementById('scheduleList');
-    const downloadStatus = document.getElementById('downloadStatus');
-    const audioDebug = document.getElementById('audioDebug');
+    </div>
+  </div>
+</div>
 
-    const pad = n => String(n).padStart(2, '0');
 
-    let audioContext;
-    let schedule = []; // [{ name, minutes }]
-    let nextTarget = null;
-    let previousTick = new Date();
+<table id="dataTable">
+  <colgroup>
+    <col style="width: 14%;">
+    <col style="width: 43%;">
+    <col style="width: 43%;">
+  </colgroup>
+  <thead></thead>
+  <tbody></tbody>
+</table>
 
-    function parseCSV(text) {
-      const rows = [];
-      let row = [];
-      let cell = '';
-      let inQuotes = false;
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Helper to convert <br>, <br/>, <br /> (any case) -> \n
+  const normalize = s => (s || '').replace(/<br\s*\/?>/gi, '\n');
 
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
+  // Get URL params (support the misspelling + correct spelling)
+  const urlParams = new URLSearchParams(window.location.search);
+  const classSeperator = (urlParams.get('Class_Seperator') || urlParams.get('Class_Separator') || '').trim();
+  const hasFilter = !!classSeperator; // if false, we'll show ALL rows instead of returning
+  const data_source      = urlParams.get('Data_Source');
+  const backColor        = urlParams.get('Back_Color');
+  const tableHeaderColor = urlParams.get('Table_Header');
+  const tableRowColor    = urlParams.get('Table_Row');
 
-        if (inQuotes) {
-          if (ch === '"' && text[i + 1] === '"') {
-            cell += '"';
-            i++;
-          } else if (ch === '"') {
-            inQuotes = false;
-          } else {
-            cell += ch;
+  // Theme
+  if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
+    document.body.style.backgroundColor = backColor;
+  }
+
+  const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
+    
+  const proxyUrl = ''; 
+  const finalUrl = proxyUrl + sheetUrl;
+
+  fetch(finalUrl)
+    .then(response => response.text())
+    .then(text => {
+      // Normalize line endings and split
+      const rows = text.replace(/\r/g, '').split('\n').filter(r => r.trim().length > 0);
+      if (rows.length === 0) return;
+
+      const tableBody = document.querySelector("#dataTable tbody");
+      const tableHeader = document.querySelector("#dataTable thead");
+
+      // Build header (skip columns 3 (index 2) and 9 (index 8))
+      const headerCells = rows[0].split(',');
+      let headerRow = tableHeader.insertRow();
+      headerCells.forEach((cell, index) => {
+        if (index !== 1 && index !== 2 && index !== 3 && index <= 5 && index !== 6 && index !== 8) {
+          let newHeaderCell = headerRow.insertCell();
+          let headerText = normalize(cell);
+          if (/^Class\s+Seperator$/i.test(headerText) || /^Class\s+Separator$/i.test(headerText)) {
+            headerText = "Class";
           }
-        } else if (ch === '"') {
-          inQuotes = true;
-        } else if (ch === ',') {
-          row.push(cell);
-          cell = '';
-        } else if (ch === '\n') {
-          row.push(cell.replace(/\r$/, ''));
-          rows.push(row);
-          row = [];
-          cell = '';
-        } else {
-          cell += ch;
-        }
-      }
-
-      row.push(cell.replace(/\r$/, ''));
-      if (row.some(v => v.trim() !== '')) rows.push(row);
-      return rows;
-    }
-
-    function parseTimeCell(value) {
-      const text = String(value ?? '').trim();
-      if (!text) return null;
-
-      let m = text.match(/\b(1[0-2]|0?[1-9])(?::([0-5]\d))?(?::[0-5]\d)?\s*([AP])\.?\s*M\.?\b/i);
-      if (m) {
-        let hour = Number(m[1]) % 12;
-        if (m[3].toUpperCase() === 'P') hour += 12;
-        return hour * 60 + Number(m[2] || 0);
-      }
-
-      m = text.match(/(?:^|[\sT])([01]?\d|2[0-3]):([0-5]\d)(?::[0-5]\d)?(?:$|\s)/);
-      if (m) return Number(m[1]) * 60 + Number(m[2]);
-
-      return null;
-    }
-
-    function formatMinutes(totalMinutes) {
-      const d = new Date();
-      d.setHours(Math.floor(totalMinutes / 60), totalMinutes % 60, 0, 0);
-      return new Intl.DateTimeFormat(undefined, {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      }).format(d);
-    }
-
-
-    function renderScheduleList() {
-      scheduleList.innerHTML = '';
-
-      for (const item of schedule) {
-        const li = document.createElement('li');
-
-        const name = document.createElement('span');
-        name.textContent = item.name;
-
-        const time = document.createElement('span');
-        time.className = 'alarm-time';
-        time.textContent = formatMinutes(item.minutes);
-
-        li.appendChild(name);
-        li.appendChild(time);
-        scheduleList.appendChild(li);
-      }
-    }
-
-    function chooseNextAlarm(now = new Date()) {
-      if (!schedule.length) {
-        nextTarget = null;
-        return;
-      }
-
-      const current = now.getHours() * 60 + now.getMinutes();
-      const afterStartOfMinute = now.getSeconds() > 0 || now.getMilliseconds() > 0;
-
-      let chosen = schedule.find(item =>
-        item.minutes > current ||
-        (item.minutes === current && !afterStartOfMinute)
-      );
-
-      const target = new Date(now);
-
-      if (!chosen) {
-        chosen = schedule[0];
-        target.setDate(target.getDate() + 1);
-      }
-
-      target.setHours(
-        Math.floor(chosen.minutes / 60),
-        chosen.minutes % 60,
-        0,
-        0
-      );
-
-      nextTarget = {
-        date: target,
-        name: chosen.name,
-        minutes: chosen.minutes
-      };
-    }
-
-    async function loadSchedule(showMessage = true) {
-      try {
-        const response = await fetch(
-          'https://jameswhithear.github.io/Whithear_Eclass/schedule.csv?_=' + Date.now(),
-          { cache: 'no-store' }
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `schedule.csv returned HTTP ${response.status} ${response.statusText}`
-          );
-        }
-
-        const text = await response.text();
-
-        if (!text.trim()) {
-          throw new Error('schedule.csv is empty');
-        }
-
-        const rows = parseCSV(text);
-        const alarms = [];
-
-        for (const row of rows) {
-          if (row.length < 2) continue;
-
-          const name = String(row[0] ?? '').trim();
-          const timeText = String(row[1] ?? '').trim();
-
-          // Header row is ignored because "Time" is not a valid time.
-          const minutes = parseTimeCell(timeText);
-
-          if (minutes !== null) {
-            alarms.push({
-              name: name || 'Alarm',
-              minutes
-            });
+          newHeaderCell.textContent = headerText; // normalize header too, just in case
+          if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+            newHeaderCell.style.backgroundColor = tableHeaderColor;
           }
         }
-
-        schedule = alarms.sort((a, b) => a.minutes - b.minutes);
-
-        if (!schedule.length) {
-          throw new Error(
-            'CSV loaded, but no valid alarm times were found in column B'
-          );
-        }
-
-        downloadStatus.textContent =
-          `Downloaded file: ${schedule.length} records — Success`;
-
-        chooseNextAlarm();
-        renderScheduleList();
-        update();
-        return true;
-
-      } catch (err) {
-        console.error('Schedule download failed:', err);
-
-        schedule = [];
-        nextTarget = null;
-
-        document.getElementById('alarmName').textContent = 'no alarm loaded';
-        targetLabel.textContent = '--';
-        remaining.textContent = '--:--:--';
-        next.textContent = '';
-        scheduleList.innerHTML = '';
-
-        downloadStatus.textContent =
-          'Downloaded file: 0 records — Failure — ' +
-          (err?.message || String(err));
-
-        return false;
-      }
-    }
-
-    
-
-    
-
-    let audioReady = false;
-
-    function updateAudioDebug() {
-      if (!audioDebug) return;
-
-      if (!audioContext) {
-        audioDebug.textContent = 'AudioContext: not created';
-      } else {
-        audioDebug.textContent = 'AudioContext: ' + audioContext.state;
-      }
-    }
-
-    async function enableAudioFromInteraction() {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-
-      if (!AudioContextClass) return;
-
-      if (!audioContext) {
-        audioContext = new AudioContextClass();
-      }
-
-      try {
-        await audioContext.resume();
-      } catch (_) {}
-
-      audioReady = audioContext.state === 'running';
-      updateAudioDebug();
-    }
-
-    // No visible sound switch.
-    // Browsers require a real user interaction before sound can play,
-    // so the first normal interaction anywhere unlocks the alarm.
-    ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(eventName => {
-      document.addEventListener(eventName, enableAudioFromInteraction, {
-        passive: eventName !== 'keydown'
       });
-    });
 
-    function playAlarm() {
-      updateAudioDebug();
-      if (!audioContext || audioContext.state !== 'running') {
-        console.warn(
-          'Alarm time reached, but the browser has not allowed audio yet.'
-        );
-        return;
-      }
 
-      // Original working 20-second alarm:
-      // 40 tones x 0.5 seconds.
-      for (let i = 0; i < 40; i++) {
-        const oscillator = audioContext.createOscillator();
-        const volume = audioContext.createGain();
-        const start = audioContext.currentTime + i * .5;
+      // Keep ONLY the most recent published row for each Class Separator
+      const latestByClass = new Map();
 
-        oscillator.type = 'sine';
-        oscillator.frequency.value = i % 2 ? 660 : 880;
+      rows.slice(1).forEach(row => {
+        const cells = row.split(',');
 
-        volume.gain.setValueAtTime(.0001, start);
-        volume.gain.exponentialRampToValueAtTime(.23, start + .025);
-        volume.gain.exponentialRampToValueAtTime(.0001, start + .45);
+        if (cells.length > 1) {
+          // Column C (index 2) must be "Yes"
+          const publishYes = (cells[2] || "").trim().toLowerCase() === "yes";
+          if (!publishYes) return;
 
-        oscillator.connect(volume).connect(audioContext.destination);
-        oscillator.start(start);
-        oscillator.stop(start + .5);
-      }
-    }
+          const classSeparator = (cells[0] || "").trim();
+          const rowDate = new Date(cells[1]);
 
-    function alarmKeyFor(date, item) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      return `${y}-${m}-${d}-${item.minutes}-${item.name}`;
-    }
+          if (!classSeparator || isNaN(rowDate.getTime())) return;
 
-    const triggeredAlarms = new Set();
+          const existing = latestByClass.get(classSeparator);
 
-    function checkScheduledAlarms(previous, now) {
-      if (!schedule.length) return;
+          // Store this row if it is the first for this class,
+          // or if its date is newer than the currently stored row.
+          if (!existing || rowDate > new Date(existing[1])) {
+            latestByClass.set(classSeparator, cells);
+          }
+        }
+      });
 
-      const startDay = new Date(previous);
-      startDay.setHours(0, 0, 0, 0);
+      // Convert the latest row from each class back into an array
+      let tableRows = Array.from(latestByClass.values());
 
-      const endDay = new Date(now);
-      endDay.setHours(0, 0, 0, 0);
+      // Sort the resulting class rows by date, newest first
+      tableRows.sort((a, b) => new Date(b[1]) - new Date(a[1]));
 
-      for (
-        let day = new Date(startDay);
-        day <= endDay;
-        day.setDate(day.getDate() + 1)
-      ) {
-        for (const item of schedule) {
-          const target = new Date(day);
-
-          target.setHours(
-            Math.floor(item.minutes / 60),
-            item.minutes % 60,
-            0,
-            0
-          );
-
-          if (previous < target && now >= target) {
-            const key = alarmKeyFor(target, item);
-
-            if (!triggeredAlarms.has(key)) {
-              triggeredAlarms.add(key);
-              playAlarm();
+      // Render body
+      tableRows.forEach(cells => {
+        let newRow = tableBody.insertRow();
+        for (let i = 0; i < headerCells.length; i++) {
+          if (i !== 1 && i !== 2 && i !== 3 && i <= 5) { // hide date and skip same columns as header
+            let newCell = newRow.insertCell();
+                if (i === 4 || i === 5) { 
+                    newCell.style.width = '25%';
+                }
+                if (i === 7) { // column 8 (index 7) becomes a link using col 9 (index 8) for URL
+                  if (cells[8] && cells[8].trim() !== '') 
+                  {
+                      const link = document.createElement('a');
+                      link.href = cells[8] || '#';
+                      link.target = '_blank';
+                      link.rel = 'noopener noreferrer';
+                      link.textContent = normalize(cells[7]);
+                    if( cells[6]  !== '')
+                    {
+                      newCell.appendChild(document.createTextNode(normalize(cells[6])));
+                      newCell.appendChild(document.createElement('br'));
+                      newCell.appendChild(document.createElement('br'));
+                    }
+                    newCell.appendChild(link);
+                  } 
+                  else {
+                  if (i === 3) {
+                    newCell.classList.add('bold-col')
+                  }
+                  // Just plain text if no URL
+                  newCell.textContent = normalize(cells[7]);
+                  }
+                }  
+                else {
+              newCell.textContent = normalize(cells[i]);
+            }
+            if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+              newCell.style.backgroundColor = tableRowColor;
             }
           }
         }
+
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching the Google Sheet data:", error);
+    });
+});
+</script>
+
+
+<script>
+(() => {
+  const clock = document.getElementById('clock');
+  const date = document.getElementById('date');
+  const remaining = document.getElementById('remaining');
+  const next = document.getElementById('next');
+  const targetLabel = document.getElementById('targetLabel');
+  const alarmName = document.getElementById('alarmName');
+  const scheduleLink = document.getElementById('scheduleLink');
+  const schedulePanel = document.getElementById('schedulePanel');
+  const scheduleList = document.getElementById('scheduleList');
+  const downloadStatus = document.getElementById('downloadStatus');
+  const audioDebug = document.getElementById('audioDebug');
+
+  const pad = n => String(n).padStart(2, '0');
+
+  let audioContext;
+  let schedule = [];
+  let nextTarget = null;
+  let previousTick = new Date();
+  const triggeredAlarms = new Set();
+
+  function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let cell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+
+      if (inQuotes) {
+        if (ch === '"' && text[i + 1] === '"') {
+          cell += '"';
+          i++;
+        } else if (ch === '"') {
+          inQuotes = false;
+        } else {
+          cell += ch;
+        }
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        row.push(cell);
+        cell = '';
+      } else if (ch === '\n') {
+        row.push(cell.replace(/\r$/, ''));
+        rows.push(row);
+        row = [];
+        cell = '';
+      } else {
+        cell += ch;
+      }
+    }
+
+    row.push(cell.replace(/\r$/, ''));
+    if (row.some(v => v.trim() !== '')) rows.push(row);
+    return rows;
+  }
+
+  function parseTimeCell(value) {
+    const text = String(value ?? '').trim();
+    if (!text) return null;
+
+    let m = text.match(/\b(1[0-2]|0?[1-9])(?::([0-5]\d))?(?::[0-5]\d)?\s*([AP])\.?\s*M\.?\b/i);
+    if (m) {
+      let hour = Number(m[1]) % 12;
+      if (m[3].toUpperCase() === 'P') hour += 12;
+      return hour * 60 + Number(m[2] || 0);
+    }
+
+    m = text.match(/(?:^|[\sT])([01]?\d|2[0-3]):([0-5]\d)(?::[0-5]\d)?(?:$|\s)/);
+    if (m) return Number(m[1]) * 60 + Number(m[2]);
+
+    return null;
+  }
+
+  function formatMinutes(totalMinutes) {
+    const d = new Date();
+    d.setHours(Math.floor(totalMinutes / 60), totalMinutes % 60, 0, 0);
+    return new Intl.DateTimeFormat(undefined, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).format(d);
+  }
+
+  function renderScheduleList() {
+    scheduleList.innerHTML = '';
+
+    for (const item of schedule) {
+      const li = document.createElement('li');
+
+      const name = document.createElement('span');
+      name.textContent = item.name;
+
+      const time = document.createElement('span');
+      time.className = 'alarm-time';
+      time.textContent = formatMinutes(item.minutes);
+
+      li.appendChild(name);
+      li.appendChild(time);
+      scheduleList.appendChild(li);
+    }
+  }
+
+  function chooseNextAlarm(now = new Date()) {
+    if (!schedule.length) {
+      nextTarget = null;
+      return;
+    }
+
+    const current = now.getHours() * 60 + now.getMinutes();
+    const afterStartOfMinute = now.getSeconds() > 0 || now.getMilliseconds() > 0;
+
+    let chosen = schedule.find(item =>
+      item.minutes > current ||
+      (item.minutes === current && !afterStartOfMinute)
+    );
+
+    const target = new Date(now);
+
+    if (!chosen) {
+      chosen = schedule[0];
+      target.setDate(target.getDate() + 1);
+    }
+
+    target.setHours(
+      Math.floor(chosen.minutes / 60),
+      chosen.minutes % 60,
+      0,
+      0
+    );
+
+    nextTarget = {
+      date: target,
+      name: chosen.name,
+      minutes: chosen.minutes
+    };
+  }
+
+  async function loadSchedule() {
+    try {
+      const response = await fetch(
+        'https://jameswhithear.github.io/Whithear_Eclass/schedule.csv?_=' + Date.now(),
+        { cache: 'no-store' }
+      );
+
+      if (!response.ok) {
+        throw new Error(`schedule.csv returned HTTP ${response.status} ${response.statusText}`);
       }
 
-      // Prevent the set from growing forever.
-      if (triggeredAlarms.size > 100) {
-        const todayPrefix =
-          `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const text = await response.text();
+      if (!text.trim()) throw new Error('schedule.csv is empty');
 
-        for (const key of [...triggeredAlarms]) {
-          if (!key.startsWith(todayPrefix)) {
-            triggeredAlarms.delete(key);
+      const rows = parseCSV(text);
+      const alarms = [];
+
+      for (const row of rows) {
+        if (row.length < 2) continue;
+
+        const name = String(row[0] ?? '').trim();
+        const timeText = String(row[1] ?? '').trim();
+        const minutes = parseTimeCell(timeText);
+
+        if (minutes !== null) {
+          alarms.push({
+            name: name || 'Alarm',
+            minutes
+          });
+        }
+      }
+
+      schedule = alarms.sort((a, b) => a.minutes - b.minutes);
+
+      if (!schedule.length) {
+        throw new Error('CSV loaded, but no valid alarm times were found in column B');
+      }
+
+      downloadStatus.textContent =
+        `Downloaded file: ${schedule.length} records — Success`;
+
+      chooseNextAlarm();
+      renderScheduleList();
+      update();
+    } catch (err) {
+      console.error('Schedule download failed:', err);
+
+      schedule = [];
+      nextTarget = null;
+
+      alarmName.textContent = 'no alarm loaded';
+      targetLabel.textContent = '--';
+      remaining.textContent = '--:--:--';
+      next.textContent = '';
+      scheduleList.innerHTML = '';
+
+      downloadStatus.textContent =
+        'Downloaded file: 0 records — Failure — ' +
+        (err?.message || String(err));
+    }
+  }
+
+  function updateAudioDebug() {
+    if (!audioContext) {
+      audioDebug.textContent = 'AudioContext: not created';
+    } else {
+      audioDebug.textContent = 'AudioContext: ' + audioContext.state;
+    }
+  }
+
+  async function enableAudioFromInteraction() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    if (!audioContext) audioContext = new AudioContextClass();
+
+    try {
+      await audioContext.resume();
+    } catch (_) {}
+
+    updateAudioDebug();
+  }
+
+  ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(eventName => {
+    document.addEventListener(eventName, enableAudioFromInteraction, {
+      passive: eventName !== 'keydown'
+    });
+  });
+
+  function playAlarm() {
+    updateAudioDebug();
+
+    if (!audioContext || audioContext.state !== 'running') {
+      console.warn('Alarm time reached, but the browser has not allowed audio yet.');
+      return;
+    }
+
+    for (let i = 0; i < 40; i++) {
+      const oscillator = audioContext.createOscillator();
+      const volume = audioContext.createGain();
+      const start = audioContext.currentTime + i * .5;
+
+      oscillator.type = 'sine';
+      oscillator.frequency.value = i % 2 ? 660 : 880;
+
+      volume.gain.setValueAtTime(.0001, start);
+      volume.gain.exponentialRampToValueAtTime(.23, start + .025);
+      volume.gain.exponentialRampToValueAtTime(.0001, start + .45);
+
+      oscillator.connect(volume).connect(audioContext.destination);
+      oscillator.start(start);
+      oscillator.stop(start + .5);
+    }
+  }
+
+  function alarmKeyFor(dateObj, item) {
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const d = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}-${item.minutes}-${item.name}`;
+  }
+
+  function checkScheduledAlarms(previous, now) {
+    if (!schedule.length) return;
+
+    const startDay = new Date(previous);
+    startDay.setHours(0, 0, 0, 0);
+
+    const endDay = new Date(now);
+    endDay.setHours(0, 0, 0, 0);
+
+    for (
+      let day = new Date(startDay);
+      day <= endDay;
+      day.setDate(day.getDate() + 1)
+    ) {
+      for (const item of schedule) {
+        const target = new Date(day);
+
+        target.setHours(
+          Math.floor(item.minutes / 60),
+          item.minutes % 60,
+          0,
+          0
+        );
+
+        if (previous < target && now >= target) {
+          const key = alarmKeyFor(target, item);
+
+          if (!triggeredAlarms.has(key)) {
+            triggeredAlarms.add(key);
+            playAlarm();
           }
         }
       }
     }
+  }
 
-    function update() {
-      const now = new Date();
+  function update() {
+    const now = new Date();
 
-      clock.textContent = new Intl.DateTimeFormat(undefined, {
+    clock.textContent = new Intl.DateTimeFormat(undefined, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).format(now);
+
+    date.textContent = new Intl.DateTimeFormat(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(now);
+
+    if (!nextTarget && schedule.length) chooseNextAlarm(now);
+
+    checkScheduledAlarms(previousTick, now);
+
+    if (nextTarget && now >= nextTarget.date) {
+      chooseNextAlarm(new Date(nextTarget.date.getTime() + 1000));
+    }
+
+    if (nextTarget) {
+      const timeText = new Intl.DateTimeFormat(undefined, {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true
-      }).format(now);
+      }).format(nextTarget.date);
 
-      date.textContent = new Intl.DateTimeFormat(undefined, {
-        weekday: 'long',
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      }).format(now);
+      alarmName.textContent = nextTarget.name;
+      targetLabel.textContent = timeText;
 
-      if (!nextTarget && schedule.length) chooseNextAlarm(now);
+      const seconds = Math.max(0, Math.ceil((nextTarget.date - now) / 1000));
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
 
-      checkScheduledAlarms(previousTick, now);
+      remaining.textContent =
+        `${pad(hours)}:${pad(minutes)}:${pad(seconds % 60)}`;
 
-      if (nextTarget && now >= nextTarget.date) {
-        chooseNextAlarm(new Date(nextTarget.date.getTime() + 1000));
-      }
+      const sameDay =
+        nextTarget.date.getFullYear() === now.getFullYear() &&
+        nextTarget.date.getMonth() === now.getMonth() &&
+        nextTarget.date.getDate() === now.getDate();
 
-      if (nextTarget) {
-        const timeText = new Intl.DateTimeFormat(undefined, {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true
-        }).format(nextTarget.date);
-
-        document.getElementById('alarmName').textContent = nextTarget.name;
-        targetLabel.textContent = timeText;
-
-        const seconds = Math.max(0, Math.ceil((nextTarget.date - now) / 1000));
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-
-        remaining.textContent =
-          `${pad(hours)}:${pad(minutes)}:${pad(seconds % 60)}`;
-
-        const sameDay =
-          nextTarget.date.getFullYear() === now.getFullYear() &&
-          nextTarget.date.getMonth() === now.getMonth() &&
-          nextTarget.date.getDate() === now.getDate();
-
-        next.textContent =
-          `Next scheduled alarm: ${nextTarget.name} — ${sameDay ? 'today' : 'tomorrow'} at ${timeText}`;
-      }
-
-      previousTick = now;
+      next.textContent =
+        `Next scheduled alarm: ${nextTarget.name} — ${sameDay ? 'today' : 'tomorrow'} at ${timeText}`;
     }
 
+    previousTick = now;
+  }
 
-    scheduleLink.addEventListener('click', event => {
-      event.preventDefault();
-      const isOpen = schedulePanel.classList.toggle('show');
-      scheduleLink.setAttribute('aria-expanded', String(isOpen));
-    });
+  scheduleLink.addEventListener('click', event => {
+    event.preventDefault();
+    const isOpen = schedulePanel.classList.toggle('show');
+    scheduleLink.setAttribute('aria-expanded', String(isOpen));
+  });
 
-    updateAudioDebug();
-    loadSchedule(true);
-    setInterval(() => loadSchedule(false), 5 * 60 * 1000);
-    update();
-    setInterval(update, 250);
-  </script>
+  updateAudioDebug();
+  loadSchedule();
+  setInterval(() => loadSchedule(), 5 * 60 * 1000);
+  update();
+  setInterval(update, 250);
+})();
+</script>
+
 </body>
 </html>
