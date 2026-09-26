@@ -292,6 +292,52 @@
       border: 1px solid var(--header-dark-color, #CC8400) !important;
     }
 
+  
+    #semesterProgressSection {
+      position: absolute;
+      top: calc(50vh + 10px);
+      left: 10px;
+      right: 10px;
+      box-sizing: border-box;
+      color: #000;
+    }
+
+    #semesterProgressTitle {
+      font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+      line-height: 1.15;
+      margin: 0 0 8px 0;
+      color: #000;
+    }
+
+    #semesterProgressRow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    #semesterProgressTrack {
+      flex: 1 1 auto;
+      height: 30px;
+      background: var(--row-color, #FFFFFF);
+      border: 1px solid var(--header-dark-color, #CC8400);
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    #semesterProgressFill {
+      width: 0%;
+      height: 100%;
+      background: var(--time-color, #444444);
+    }
+
+    #semesterProgressPercent {
+      flex: 0 0 auto;
+      min-width: 70px;
+      font-size: clamp(1.1rem, 1.55vw, 1.5rem);
+      color: #000;
+    }
+
   </style>
 </head>
 <body>
@@ -332,6 +378,17 @@
   <tbody></tbody>
 </table>
 
+<div id="semesterProgressSection" aria-label="Semester progress">
+  <div id="semesterProgressTitle">Semester Progress Bar</div>
+  <div id="semesterProgressRow">
+    <div id="semesterProgressTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="semesterProgressFill"></div>
+    </div>
+    <div id="semesterProgressPercent">--%</div>
+  </div>
+</div>
+
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   // Helper to convert <br>, <br/>, <br /> (any case) -> \n
@@ -346,6 +403,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const tableHeaderColor = urlParams.get('Table_Header');
   const tableRowColor    = urlParams.get('Table_Row');
   const timeColor        = urlParams.get('Time_Clr');
+  const semesterProgressTrack = document.getElementById('semesterProgressTrack');
+  const semesterProgressFill = document.getElementById('semesterProgressFill');
+  const semesterProgressPercent = document.getElementById('semesterProgressPercent');
 
   // Share the same URL-driven colors with both the table and timer.
   const rootStyle = document.documentElement.style;
@@ -388,6 +448,135 @@ document.addEventListener("DOMContentLoaded", function () {
     
   const proxyUrl = ''; 
   const finalUrl = proxyUrl + sheetUrl;
+
+
+  function parseProgressCSV(text) {
+    const rows = [];
+    let row = [];
+    let cell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+
+      if (inQuotes) {
+        if (ch === '"' && text[i + 1] === '"') {
+          cell += '"';
+          i++;
+        } else if (ch === '"') {
+          inQuotes = false;
+        } else {
+          cell += ch;
+        }
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        row.push(cell);
+        cell = '';
+      } else if (ch === '\n') {
+        row.push(cell.replace(/\r$/, ''));
+        rows.push(row);
+        row = [];
+        cell = '';
+      } else {
+        cell += ch;
+      }
+    }
+
+    row.push(cell.replace(/\r$/, ''));
+    if (row.some(v => v.trim() !== '')) rows.push(row);
+    return rows;
+  }
+
+  function parseSemesterDate(value) {
+    const s = String(value ?? '').trim();
+    if (!s) return null;
+
+    let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (m) return new Date(Number(m[3]), Number(m[1]) - 1, Number(m[2]));
+
+    m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+
+    const d = new Date(s);
+    if (isNaN(d.getTime())) return null;
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
+  function findSemesterDates(rows) {
+    let startDate = null;
+    let endDate = null;
+
+    for (const row of rows) {
+      if (row.length < 2) continue;
+
+      const label = String(row[0] ?? '').trim().toLowerCase();
+      const value = String(row[1] ?? '').trim();
+
+      if (label === 'semester start') {
+        startDate = parseSemesterDate(value);
+      }
+
+      if (label === 'semester end') {
+        endDate = parseSemesterDate(value);
+      }
+    }
+
+    return { startDate, endDate };
+  }
+
+  function updateSemesterProgress(startDate, endDate) {
+    if (!startDate || !endDate || endDate <= startDate) {
+      semesterProgressFill.style.width = '0%';
+      semesterProgressPercent.textContent = '--%';
+      semesterProgressTrack.setAttribute('aria-valuenow', '0');
+      return;
+    }
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const total = endDate - startDate;
+    const elapsed = today - startDate;
+
+    let pct = (elapsed / total) * 100;
+    pct = Math.max(0, Math.min(100, pct));
+
+    const rounded = Math.round(pct);
+
+    semesterProgressFill.style.width = pct.toFixed(2) + '%';
+    semesterProgressPercent.textContent = rounded + '%';
+    semesterProgressTrack.setAttribute('aria-valuenow', String(rounded));
+  }
+
+  async function loadSemesterProgress() {
+    const semesterDatesUrl =
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&gid=1109580090';
+
+    try {
+      const response = await fetch(
+        semesterDatesUrl + '&_=' + Date.now(),
+        { cache: 'no-store' }
+      );
+
+      if (!response.ok) throw new Error('Semester date sheet failed to load');
+
+      const csvText = await response.text();
+      const rows = parseProgressCSV(csvText);
+      const { startDate, endDate } = findSemesterDates(rows);
+
+      updateSemesterProgress(startDate, endDate);
+    } catch (err) {
+      console.error('Semester progress download failed:', err);
+      semesterProgressFill.style.width = '0%';
+      semesterProgressPercent.textContent = '--%';
+      semesterProgressTrack.setAttribute('aria-valuenow', '0');
+    }
+  }
+
+  loadSemesterProgress();
+  setInterval(loadSemesterProgress, 5 * 60 * 1000);
+
 
   fetch(finalUrl)
     .then(response => response.text())
