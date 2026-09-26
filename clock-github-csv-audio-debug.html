@@ -272,11 +272,22 @@
       vertical-align: middle;
     }
 
+  
+    #sheet2Text {
+      color: #000 !important;
+      font-size: clamp(1rem, 1.6vw, 1.5rem);
+      line-height: 1.15;
+      font-weight: 400;
+      margin: 0 0 3px 0;
+      white-space: pre-line;
+    }
+
   </style>
 </head>
 <body>
 
 <div id="clockPanel">
+  <div id="sheet2Text"></div>
   <div id="clock">--:--</div>
   <div id="date"></div>
 
@@ -476,6 +487,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 (() => {
+  const sheet2Text = document.getElementById('sheet2Text');
   const clock = document.getElementById('clock');
   const date = document.getElementById('date');
   const remaining = document.getElementById('remaining');
@@ -614,6 +626,45 @@ document.addEventListener("DOMContentLoaded", function () {
       name: chosen.name,
       minutes: chosen.minutes
     };
+  }
+
+
+  async function loadSheet2Text() {
+    // This uses the same published Google Sheet, but requests Sheet2 by name.
+    // A second candidate is included in case the tab is named "Sheet 2".
+    const sheet2Urls = [
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&sheet=Sheet2&_=' + Date.now(),
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&sheet=Sheet%202&_=' + Date.now()
+    ];
+
+    for (const url of sheet2Urls) {
+      try {
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) continue;
+
+        const csvText = await response.text();
+        if (!csvText.trim()) continue;
+
+        const rows = parseCSV(csvText);
+
+        // Combine all non-empty cells on Sheet 2 into readable text.
+        const displayLines = rows
+          .map(row => row.map(cell => String(cell ?? '').trim())
+                         .filter(Boolean)
+                         .join(' '))
+          .filter(Boolean);
+
+        if (displayLines.length) {
+          sheet2Text.textContent = displayLines.join('\n');
+          return true;
+        }
+      } catch (err) {
+        console.warn('Sheet 2 text download failed for URL:', url, err);
+      }
+    }
+
+    sheet2Text.textContent = '';
+    return false;
   }
 
   async function loadSchedule() {
@@ -849,8 +900,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   updateAudioDebug();
+  loadSheet2Text();
   loadSchedule();
-  setInterval(() => loadSchedule(), 5 * 60 * 1000);
+  setInterval(() => {
+    loadSheet2Text();
+    loadSchedule();
+  }, 5 * 60 * 1000);
   update();
   setInterval(update, 250);
 })();
