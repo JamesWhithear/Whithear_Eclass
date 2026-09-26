@@ -525,6 +525,70 @@
       display: none !important;
     }
 
+  
+    /* Align the right-side table/progress area with the timer box */
+    #rightDashboardColumn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: calc(60vw - 15px);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    #rightTopArea {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 0;
+    }
+
+    /* Let the table consume all extra vertical space above the progress bar */
+    #rightTopArea #dataTable {
+      position: static !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: auto !important;
+      margin: 0 !important;
+      flex: 1 1 auto;
+    }
+
+    /* Keep exactly 15px between the table and progress bar */
+    #rightTopArea #semesterProgressSection {
+      position: static !important;
+      width: 100% !important;
+      margin: 15px 0 0 0 !important;
+      flex: 0 0 auto;
+    }
+
+    /* Make the rows stretch when the table needs to grow vertically */
+    #rightTopArea #dataTable tbody tr {
+      height: auto;
+    }
+
+    /* Center the header row */
+    #dataTable thead th,
+    #dataTable thead td {
+      text-align: center !important;
+      vertical-align: middle !important;
+    }
+
+    /* Center the first column */
+    #dataTable th:first-child,
+    #dataTable td:first-child {
+      text-align: center !important;
+      vertical-align: middle !important;
+    }
+
+  
+    #rightDashboardColumn #failingStudentsPanel {
+      position: static !important;
+      align-self: flex-end;
+      margin-top: 10px !important;
+    }
+
   </style>
 </head>
 <body>
@@ -557,6 +621,7 @@
 
 
 <div id="rightDashboardColumn">
+<div id="rightTopArea">
 <table id="dataTable">
   <colgroup>
     <col style="width: 14%;">
@@ -576,6 +641,8 @@
     <div id="semesterProgressPercent">--%</div>
   </div>
 </div>
+</div>
+
 
 <div id="failingStudentsPanel" aria-label="Number of students failing">
   <div id="failingStudentsTitle"># of Students Failing</div>
@@ -1487,6 +1554,56 @@ document.addEventListener("DOMContentLoaded", function () {
   }, 5 * 60 * 1000);
   update();
   setInterval(update, 250);
+
+
+  function syncRightTopAreaHeight() {
+    const countdownBox = document.getElementById('countdownBox');
+    const rightTopArea = document.getElementById('rightTopArea');
+    const dataTable = document.getElementById('dataTable');
+    const progressSection = document.getElementById('semesterProgressSection');
+
+    if (!countdownBox || !rightTopArea || !dataTable || !progressSection) return;
+
+    const rightTop = rightTopArea.getBoundingClientRect().top;
+    const timerBottom = countdownBox.getBoundingClientRect().bottom;
+
+    const availableHeight = Math.max(0, timerBottom - rightTop);
+    rightTopArea.style.height = availableHeight + 'px';
+
+    // Progress section keeps its natural height.
+    const progressHeight = progressSection.getBoundingClientRect().height;
+
+    // Leave exactly 15px between table bottom and progress top.
+    const tableHeight = Math.max(
+      dataTable.scrollHeight,
+      availableHeight - progressHeight - 15
+    );
+
+    dataTable.style.height = tableHeight + 'px';
+
+    // Distribute any extra height among body rows so the table fills the space.
+    const headerHeight = dataTable.tHead ? dataTable.tHead.getBoundingClientRect().height : 0;
+    const bodyRows = dataTable.tBodies[0]
+      ? Array.from(dataTable.tBodies[0].rows)
+      : [];
+
+    if (bodyRows.length) {
+      const bodyHeight = Math.max(0, tableHeight - headerHeight);
+      const rowHeight = bodyHeight / bodyRows.length;
+
+      for (const row of bodyRows) {
+        row.style.height = rowHeight + 'px';
+      }
+    }
+  }
+
+  window.addEventListener('load', syncRightTopAreaHeight);
+  window.addEventListener('resize', syncRightTopAreaHeight);
+
+  // Re-sync after remote content is likely to have populated.
+  setTimeout(syncRightTopAreaHeight, 500);
+  setTimeout(syncRightTopAreaHeight, 1500);
+
 })();
 </script>
 
