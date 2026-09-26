@@ -73,10 +73,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
+      // Add a final column for the Show/Hide Details button
+      const actionsHeader = headerRow.insertCell();
+      actionsHeader.textContent = "Details";
       if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
         actionsHeader.style.backgroundColor = tableHeaderColor;
       }
       renderedHeaderCount++;
+
 
       // Collect filtered rows
       let tableRows = [];
@@ -84,10 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const cells = row.split(',');
         if (cells.length > 1) {
           // Publish must be "Yes" in col C (index 2)
-          const publishYes = cells[2] === "Yes";
+          const publishYes = (cells[2] || "").trim().toLowerCase() === "yes";
           // If filter is present, class must match; if not, include all classes
           const classOk = hasFilter ? (cells[0] === classSeperator) : true;
-          if (publishYes) {
+          if (publishYes && classOk) {
             tableRows.push(cells);
           }
         }
@@ -140,6 +144,17 @@ document.addEventListener("DOMContentLoaded", function () {
               newCell.style.backgroundColor = tableRowColor;
             }
           }
+        }
+
+        // Add Show Details button in the last column
+        const actionCell = newRow.insertCell();
+        const button = document.createElement('button');
+        button.className = 'show-hide-btn';
+        button.type = 'button';
+        button.textContent = 'Show Details';
+        actionCell.appendChild(button);
+        if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+          actionCell.style.backgroundColor = tableRowColor;
         }
 
         // Details row (immediately after)
