@@ -472,6 +472,59 @@
       vertical-align: middle !important;
     }
 
+  
+    /* Right-side dashboard stack */
+    #rightDashboardColumn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: calc(60vw - 15px);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Main class table fills all available width in the top-right area */
+    #rightDashboardColumn #dataTable {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: auto !important;
+      margin: 0 !important;
+    }
+
+    /* Progress bar sits directly below the main table */
+    #rightDashboardColumn #semesterProgressSection {
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      width: 100% !important;
+      margin: 10px 0 0 0 !important;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Failing-students table sits 10px below the progress bar */
+    #rightDashboardColumn #failingStudentsPanel {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      align-self: flex-end;
+      margin-top: 10px !important;
+      width: min(360px, 100%) !important;
+    }
+
+    /* Debug panel removed */
+    #failingRawDataPanel {
+      display: none !important;
+    }
+
   </style>
 </head>
 <body>
@@ -502,6 +555,8 @@
 </div>
 
 
+
+<div id="rightDashboardColumn">
 <table id="dataTable">
   <colgroup>
     <col style="width: 14%;">
@@ -521,6 +576,37 @@
     <div id="semesterProgressPercent">--%</div>
   </div>
 </div>
+
+<div id="failingStudentsPanel" aria-label="Number of students failing">
+  <div id="failingStudentsTitle"># of Students Failing</div>
+  <div id="failingStudentsGrid">
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-0">6th First</div>
+      <div class="failing-value" id="fail-value-0"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-1">6th Second</div>
+      <div class="failing-value" id="fail-value-1"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-2">7th First</div>
+      <div class="failing-value" id="fail-value-2"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-3">7th Second</div>
+      <div class="failing-value" id="fail-value-3"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-4">8th First</div>
+      <div class="failing-value" id="fail-value-4"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-5">8th Second</div>
+      <div class="failing-value" id="fail-value-5"># (X%)</div>
+    </div>
+  </div>
+</div>
+
 
 
 <script>
@@ -849,41 +935,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-<div id="failingStudentsPanel" aria-label="Number of students failing">
-  <div id="failingStudentsTitle"># of Students Failing</div>
-  <div id="failingStudentsGrid">
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-0">6th First</div>
-      <div class="failing-value" id="fail-value-0"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-1">6th Second</div>
-      <div class="failing-value" id="fail-value-1"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-2">7th First</div>
-      <div class="failing-value" id="fail-value-2"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-3">7th Second</div>
-      <div class="failing-value" id="fail-value-3"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-4">8th First</div>
-      <div class="failing-value" id="fail-value-4"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-5">8th Second</div>
-      <div class="failing-value" id="fail-value-5"># (X%)</div>
-    </div>
-  </div>
+
 </div>
 
 
-<div id="failingRawDataPanel" aria-label="Failing students raw CSV data">
-  <div id="failingRawDataTitle">Raw Failing Students Data</div>
-  <pre id="failingRawData">Waiting for data...</pre>
-</div>
+
 
 <script>
 (() => {
@@ -1293,8 +1349,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 
-  const failingRawData = document.getElementById('failingRawData');
-
   const failingStudentClassEls = [
     document.getElementById('fail-class-0'),
     document.getElementById('fail-class-1'),
@@ -1380,8 +1434,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const csvText = await response.text();
 
       // Debug: show the exact raw response from Google Sheets.
-      if (failingRawData) failingRawData.textContent = csvText || '[Empty response]';
-
       const rows = parseCSV(csvText);
 
       const items = [];
