@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const publishYes = cells[2] === "Yes";
           // If filter is present, class must match; if not, include all classes
           const classOk = hasFilter ? (cells[0] === classSeperator) : true;
-          if (publishYes && classOk) {
+          if (publishYes) {
             tableRows.push(cells);
           }
         }
