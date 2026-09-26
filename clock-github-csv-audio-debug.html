@@ -32,14 +32,14 @@
       overflow: auto;
       box-sizing: border-box;
       padding: 18px;
-      background: #101427;
+      background: var(--page-color, #101427);
       color: #f7f8ff;
       font-family: Arial, Helvetica, system-ui, sans-serif;
       text-align: center;
     }
 
     #clockPanel .clock-label {
-      color: #a8bdf7;
+      color: var(--header-color, #a8bdf7);
       text-transform: uppercase;
       letter-spacing: .18em;
       font-size: clamp(.8rem, 1.3vw, 1.2rem);
@@ -64,14 +64,14 @@
     #countdownBox {
       margin-top: 18px;
       padding: 16px;
-      background: #1d2540;
-      border: 1px solid #3b496f;
+      background: var(--panel-color, #1d2540);
+      border: 1px solid var(--header-color, #3b496f);
       border-radius: 18px;
     }
 
     #remaining {
       margin-top: 10px;
-      color: #96e4d7;
+      color: var(--header-color, #96e4d7);
       font-variant-numeric: tabular-nums;
       font-size: clamp(2.2rem, 4vw, 4rem);
       font-weight: 760;
@@ -87,7 +87,7 @@
     #scheduleLink {
       display: inline-block;
       margin-top: 12px;
-      color: #a8bdf7;
+      color: var(--header-color, #a8bdf7);
       font-weight: 700;
       text-decoration: underline;
       cursor: pointer;
@@ -97,8 +97,8 @@
       display: none;
       margin-top: 12px;
       padding: 12px;
-      background: #1d2540;
-      border: 1px solid #3b496f;
+      background: var(--panel-color, #1d2540);
+      border: 1px solid var(--header-color, #3b496f);
       border-radius: 14px;
       text-align: left;
     }
@@ -123,7 +123,7 @@
     #scheduleList li:last-child { border-bottom: 0; }
 
     #scheduleList .alarm-time {
-      color: #96e4d7;
+      color: var(--header-color, #96e4d7);
       white-space: nowrap;
       font-weight: 700;
     }
@@ -135,12 +135,47 @@
       font-size: .75rem;
     }
 
+  
+    /* Timer-like table styling */
+    #dataTable {
+      background: var(--panel-color, #1d2540);
+      color: var(--text-color, #f7f8ff);
+      border: 1px solid var(--header-color, #3b496f);
+      border-radius: 18px;
+      overflow: hidden;
+      border-collapse: separate;
+      border-spacing: 0;
+      box-shadow: none;
+    }
+
+    #dataTable th,
+    #dataTable td {
+      border: 0;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      padding: 12px 14px;
+      color: inherit;
+    }
+
+    #dataTable thead th,
+    #dataTable thead td {
+      background: var(--header-color, #3b496f) !important;
+      color: var(--header-text-color, #f7f8ff);
+      font-weight: 700;
+    }
+
+    #dataTable tbody td {
+      background: var(--row-color, #1d2540) !important;
+    }
+
+    #dataTable tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
   </style>
 </head>
 <body>
 
 <div id="clockPanel">
-  <div class="clock-label">Current time</div>
   <div id="clock">--:--</div>
   <div id="date"></div>
 
@@ -185,6 +220,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const backColor        = urlParams.get('Back_Color');
   const tableHeaderColor = urlParams.get('Table_Header');
   const tableRowColor    = urlParams.get('Table_Row');
+
+  // Share the same URL-driven colors with both the table and timer.
+  const rootStyle = document.documentElement.style;
+
+  if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
+    rootStyle.setProperty('--page-color', backColor);
+  }
+
+  if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
+    rootStyle.setProperty('--header-color', tableHeaderColor);
+  }
+
+  if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
+    rootStyle.setProperty('--row-color', tableRowColor);
+    rootStyle.setProperty('--panel-color', tableRowColor);
+  }
 
   // Theme
   if (backColor && /^#[0-9A-Fa-f]{6}$/.test(backColor)) {
