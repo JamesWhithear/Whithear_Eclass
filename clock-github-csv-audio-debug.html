@@ -835,6 +835,43 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
+
+<div id="failingStudentsPanel" aria-label="Number of students failing">
+  <div id="failingStudentsTitle"># of Students Failing</div>
+  <div id="failingStudentsGrid">
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-0">6th First</div>
+      <div class="failing-value" id="fail-value-0"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-1">6th Second</div>
+      <div class="failing-value" id="fail-value-1"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-2">7th First</div>
+      <div class="failing-value" id="fail-value-2"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-3">7th Second</div>
+      <div class="failing-value" id="fail-value-3"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-4">8th First</div>
+      <div class="failing-value" id="fail-value-4"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-5">8th Second</div>
+      <div class="failing-value" id="fail-value-5"># (X%)</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="failingRawDataPanel" aria-label="Failing students raw CSV data">
+  <div id="failingRawDataTitle">Raw Failing Students Data</div>
+  <pre id="failingRawData">Waiting for data...</pre>
+</div>
+
 <script>
 (() => {
   const sheet2Text = document.getElementById('sheet2Text');
@@ -1299,6 +1336,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const valueEl = failingStudentValueEls[i];
       const item = ordered[i];
 
+      if (!classEl || !valueEl) continue;
+
       if (item) {
         classEl.textContent = item.classNumber || '';
         valueEl.textContent = `${item.failingStudents} (${item.percentFailing})`;
@@ -1328,7 +1367,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const csvText = await response.text();
 
       // Debug: show the exact raw response from Google Sheets.
-      failingRawData.textContent = csvText || '[Empty response]';
+      if (failingRawData) failingRawData.textContent = csvText || '[Empty response]';
 
       const rows = parseCSV(csvText);
 
@@ -1357,8 +1396,10 @@ document.addEventListener("DOMContentLoaded", function () {
       renderFailingStudents(items);
     } catch (err) {
       console.error('Failing students download failed:', err);
-      failingRawData.textContent =
-        'ERROR LOADING CSV:\n' + (err?.message || String(err));
+      if (failingRawData) {
+        failingRawData.textContent =
+          'ERROR LOADING CSV:\n' + (err?.message || String(err));
+      }
       renderFailingStudents([]);
     }
   }
@@ -1385,41 +1426,6 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
-<div id="failingStudentsPanel" aria-label="Number of students failing">
-  <div id="failingStudentsTitle"># of Students Failing</div>
-  <div id="failingStudentsGrid">
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-0">6th First</div>
-      <div class="failing-value" id="fail-value-0"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-1">6th Second</div>
-      <div class="failing-value" id="fail-value-1"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-2">7th First</div>
-      <div class="failing-value" id="fail-value-2"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-3">7th Second</div>
-      <div class="failing-value" id="fail-value-3"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-4">8th First</div>
-      <div class="failing-value" id="fail-value-4"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-5">8th Second</div>
-      <div class="failing-value" id="fail-value-5"># (X%)</div>
-    </div>
-  </div>
-</div>
-
-
-<div id="failingRawDataPanel" aria-label="Failing students raw CSV data">
-  <div id="failingRawDataTitle">Raw Failing Students Data</div>
-  <pre id="failingRawData">Waiting for data...</pre>
-</div>
 
 </body>
 </html>
