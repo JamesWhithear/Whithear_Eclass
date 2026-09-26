@@ -73,9 +73,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      // Add Actions column
-      const actionsHeader = headerRow.insertCell();
-      actionsHeader.textContent = 'Actions';
       if (tableHeaderColor && /^#[0-9A-Fa-f]{6}$/.test(tableHeaderColor)) {
         actionsHeader.style.backgroundColor = tableHeaderColor;
       }
