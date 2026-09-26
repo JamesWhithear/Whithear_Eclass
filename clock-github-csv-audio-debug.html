@@ -196,7 +196,7 @@
     }
 
     #clock {
-      color: #444 !important;
+      color: var(--time-color, #444444) !important;
     }
 
     #date {
@@ -287,6 +287,11 @@
       white-space: pre-line;
     }
 
+  
+    #countdownBox {
+      border: 1px solid var(--header-dark-color, #CC8400) !important;
+    }
+
   </style>
 </head>
 <body>
@@ -340,6 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const backColor        = urlParams.get('Back_Color');
   const tableHeaderColor = urlParams.get('Table_Header');
   const tableRowColor    = urlParams.get('Table_Row');
+  const timeColor        = urlParams.get('Time_Clr');
 
   // Share the same URL-driven colors with both the table and timer.
   const rootStyle = document.documentElement.style;
@@ -367,6 +373,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (tableRowColor && /^#[0-9A-Fa-f]{6}$/.test(tableRowColor)) {
     rootStyle.setProperty('--row-color', tableRowColor);
     rootStyle.setProperty('--panel-color', tableRowColor);
+  }
+
+  if (timeColor && /^#[0-9A-Fa-f]{6}$/.test(timeColor)) {
+    rootStyle.setProperty('--time-color', timeColor);
   }
 
   // Theme
