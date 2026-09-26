@@ -363,7 +363,7 @@
     #failingStudentsPanel {
       position: absolute;
       right: 14px;
-      bottom: 14px;
+      top: calc(50vh + 65px);
       width: min(310px, calc(100vw - 28px));
       background: var(--row-color, #FFFFFF);
       border: 1px solid var(--header-dark-color, #CC8400);
@@ -1273,7 +1273,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadFailingStudents() {
     const failingStudentsUrl =
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&gid=1571458350';
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?gid=1571458350&single=true&output=csv';
 
     try {
       const response = await fetch(
@@ -1292,13 +1292,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const items = [];
 
-      for (let i = 1; i < rows.length; i++) {
+      for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (!row || row.length < 4) continue;
 
-        const classNumber = String(row[0] ?? '').trim();      // Column 1
-        const failingStudents = String(row[1] ?? '').trim();  // Column 2
-        const percentFailing = String(row[3] ?? '').trim();   // Column 4
+        const classNumber = String(row[0] ?? '').trim();
+        const failingStudents = String(row[1] ?? '').trim();
+        const percentFailing = String(row[3] ?? '').trim();
+
+        // Skip the header row.
+        if (classNumber.toLowerCase() === 'class number') continue;
 
         if (!classNumber) continue;
 
