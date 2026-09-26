@@ -359,6 +359,70 @@
       border-radius: 15px;
     }
 
+  
+    #failingStudentsPanel {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      width: min(310px, calc(100vw - 28px));
+      background: var(--row-color, #FFFFFF);
+      border: 1px solid var(--header-dark-color, #CC8400);
+      border-radius: 22px;
+      overflow: hidden;
+      box-sizing: border-box;
+      color: #000;
+    }
+
+    #failingStudentsTitle {
+      background: var(--header-color, #FFA500);
+      color: #000;
+      text-align: center;
+      font-weight: 700;
+      font-size: clamp(1.1rem, 1.9vw, 1.5rem);
+      line-height: 1.15;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--header-dark-color, #CC8400);
+    }
+
+    #failingStudentsGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .failing-cell {
+      background: var(--row-color, #FFFFFF);
+      min-height: 88px;
+      padding: 8px 10px 10px;
+      text-align: center;
+      box-sizing: border-box;
+      border-right: 1px solid var(--header-dark-color, #CC8400);
+      border-bottom: 1px solid var(--header-dark-color, #CC8400);
+    }
+
+    .failing-cell:nth-child(2n) {
+      border-right: 0;
+    }
+
+    .failing-cell:nth-last-child(-n + 2) {
+      border-bottom: 0;
+    }
+
+    .failing-class {
+      color: #000;
+      font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+      line-height: 1.15;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .failing-value {
+      color: #E9272E;
+      font-size: clamp(1.55rem, 2.7vw, 2.15rem);
+      line-height: 1.05;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
   </style>
 </head>
 <body>
@@ -1142,6 +1206,117 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+
+  const failingStudentClassEls = [
+    document.getElementById('fail-class-0'),
+    document.getElementById('fail-class-1'),
+    document.getElementById('fail-class-2'),
+    document.getElementById('fail-class-3'),
+    document.getElementById('fail-class-4'),
+    document.getElementById('fail-class-5')
+  ];
+
+  const failingStudentValueEls = [
+    document.getElementById('fail-value-0'),
+    document.getElementById('fail-value-1'),
+    document.getElementById('fail-value-2'),
+    document.getElementById('fail-value-3'),
+    document.getElementById('fail-value-4'),
+    document.getElementById('fail-value-5')
+  ];
+
+  function normalizeClassOrder(items) {
+    const preferredOrder = [
+      '6th first',
+      '6th second',
+      '7th first',
+      '7th second',
+      '8th first',
+      '8th second'
+    ];
+
+    const byName = new Map(
+      items.map(item => [String(item.classNumber || '').trim().toLowerCase(), item])
+    );
+
+    const ordered = [];
+
+    for (const name of preferredOrder) {
+      if (byName.has(name)) ordered.push(byName.get(name));
+    }
+
+    for (const item of items) {
+      const key = String(item.classNumber || '').trim().toLowerCase();
+      if (!preferredOrder.includes(key)) ordered.push(item);
+    }
+
+    return ordered;
+  }
+
+  function renderFailingStudents(items) {
+    const ordered = normalizeClassOrder(items).slice(0, 6);
+
+    for (let i = 0; i < 6; i++) {
+      const classEl = failingStudentClassEls[i];
+      const valueEl = failingStudentValueEls[i];
+      const item = ordered[i];
+
+      if (item) {
+        classEl.textContent = item.classNumber || '';
+        valueEl.textContent = `${item.failingStudents} (${item.percentFailing})`;
+      } else {
+        classEl.textContent = '';
+        valueEl.textContent = '# (X%)';
+      }
+    }
+  }
+
+  async function loadFailingStudents() {
+    const failingStudentsUrl =
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&gid=1571458350';
+
+    try {
+      const response = await fetch(
+        failingStudentsUrl + '&_=' + Date.now(),
+        { cache: 'no-store' }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failing students CSV returned HTTP ${response.status} ${response.statusText}`
+        );
+      }
+
+      const csvText = await response.text();
+      const rows = parseCSV(csvText);
+
+      const items = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length < 4) continue;
+
+        const classNumber = String(row[0] ?? '').trim();
+        const failingStudents = String(row[1] ?? '').trim();
+        const percentFailing = String(row[3] ?? '').trim();
+
+        if (!classNumber) continue;
+
+        items.push({
+          classNumber,
+          failingStudents: failingStudents || '#',
+          percentFailing: percentFailing || 'X%'
+        });
+      }
+
+      renderFailingStudents(items);
+    } catch (err) {
+      console.error('Failing students download failed:', err);
+      renderFailingStudents([]);
+    }
+  }
+
+
   scheduleLink.addEventListener('click', event => {
     event.preventDefault();
     const isOpen = schedulePanel.classList.toggle('show');
@@ -1151,14 +1326,47 @@ document.addEventListener("DOMContentLoaded", function () {
   updateAudioDebug();
   loadSheet2Text();
   loadSchedule();
+  loadFailingStudents();
   setInterval(() => {
     loadSheet2Text();
     loadSchedule();
+    loadFailingStudents();
   }, 5 * 60 * 1000);
   update();
   setInterval(update, 250);
 })();
 </script>
+
+
+<div id="failingStudentsPanel" aria-label="Number of students failing">
+  <div id="failingStudentsTitle"># of Students Failing</div>
+  <div id="failingStudentsGrid">
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-0">6th First</div>
+      <div class="failing-value" id="fail-value-0"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-1">6th Second</div>
+      <div class="failing-value" id="fail-value-1"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-2">7th First</div>
+      <div class="failing-value" id="fail-value-2"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-3">7th Second</div>
+      <div class="failing-value" id="fail-value-3"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-4">8th First</div>
+      <div class="failing-value" id="fail-value-4"># (X%)</div>
+    </div>
+    <div class="failing-cell">
+      <div class="failing-class" id="fail-class-5">8th Second</div>
+      <div class="failing-value" id="fail-value-5"># (X%)</div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
