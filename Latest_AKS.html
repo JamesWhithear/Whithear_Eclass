@@ -70,27 +70,37 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
 
-      // Collect filtered rows
-      let tableRows = [];
+      // Keep ONLY the most recent published row for each Class Separator
+      const latestByClass = new Map();
+
       rows.slice(1).forEach(row => {
         const cells = row.split(',');
+
         if (cells.length > 1) {
-          // Publish must be "Yes" in col C (index 2)
+          // Column C (index 2) must be "Yes"
           const publishYes = (cells[2] || "").trim().toLowerCase() === "yes";
-          // If filter is present, class must match; if not, include all classes
-          const classOk = hasFilter ? (cells[0] === classSeperator) : true;
-          if (publishYes && classOk) {
-            tableRows.push(cells);
+          if (!publishYes) return;
+
+          const classSeparator = (cells[0] || "").trim();
+          const rowDate = new Date(cells[1]);
+
+          if (!classSeparator || isNaN(rowDate.getTime())) return;
+
+          const existing = latestByClass.get(classSeparator);
+
+          // Store this row if it is the first for this class,
+          // or if its date is newer than the currently stored row.
+          if (!existing || rowDate > new Date(existing[1])) {
+            latestByClass.set(classSeparator, cells);
           }
         }
       });
 
-      // Sort by second column (index 1) descending as dates
-      tableRows.sort((a, b) => {
-        const dateA = new Date(a[1]);
-        const dateB = new Date(b[1]);
-        return dateB - dateA;
-      });
+      // Convert the latest row from each class back into an array
+      let tableRows = Array.from(latestByClass.values());
+
+      // Sort the resulting class rows by date, newest first
+      tableRows.sort((a, b) => new Date(b[1]) - new Date(a[1]));
 
       // Render body
       tableRows.forEach(cells => {
