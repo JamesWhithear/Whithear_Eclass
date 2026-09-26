@@ -190,7 +190,10 @@
       color: #000 !important;
     }
 
-    #clock,
+    #clock {
+      color: #000 !important;
+    }
+
     #date {
       color: var(--header-dark-color, #CC8400) !important;
     }
@@ -247,6 +250,17 @@
     #dataTable thead th,
     #dataTable thead td {
       font-size: 1.25rem;
+    }
+
+  
+    #dataTable th,
+    #dataTable td {
+      border: 1px solid var(--header-dark-color, #CC8400) !important;
+    }
+
+    #dataTable thead th,
+    #dataTable thead td {
+      text-align: center !important;
     }
 
   </style>
@@ -596,7 +610,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadSchedule() {
     try {
       const response = await fetch(
-        'https://jameswhithear.github.io/Whithear_Eclass/schedule.csv?_=' + Date.now(),
+        'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&_=' + Date.now(),
         { cache: 'no-store' }
       );
 
