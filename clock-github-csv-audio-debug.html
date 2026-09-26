@@ -33,7 +33,7 @@
       height: calc(50vh - 20px);
       overflow: auto;
       box-sizing: border-box;
-      padding: 18px;
+      padding: 6px 18px 18px;
       background: var(--page-color, #101427);
       color: #f7f8ff;
       font-family: Arial, Helvetica, system-ui, sans-serif;
@@ -49,7 +49,7 @@
     }
 
     #clock {
-      margin-top: 12px;
+      margin-top: 0;
       font-variant-numeric: tabular-nums;
       font-size: clamp(3rem, 6vw, 6rem);
       line-height: 1;
@@ -202,6 +202,7 @@
       margin-bottom: 0;
       cursor: pointer;
       user-select: none;
+      color: #000 !important;
     }
 
     #next:hover {
@@ -227,6 +228,19 @@
 
     #countdownBox {
       padding-bottom: 12px;
+    }
+
+  
+    #timerExtras,
+    #timerExtras a,
+    #downloadStatus,
+    #audioDebug,
+    #schedulePanel,
+    #schedulePanel h3,
+    #scheduleList,
+    #scheduleList li,
+    #scheduleList .alarm-time {
+      color: #000 !important;
     }
 
   </style>
