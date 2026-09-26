@@ -1296,16 +1296,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const row = rows[i];
         if (!row || row.length < 4) continue;
 
-        const classNumber = String(row[0] ?? '').trim();
-        const failingStudents = String(row[1] ?? '').trim();
-        const percentFailing = String(row[3] ?? '').trim();
+        const classNumber = String(row[0] ?? '').trim();      // Column 1
+        const failingStudents = String(row[1] ?? '').trim();  // Column 2
+        const percentFailing = String(row[3] ?? '').trim();   // Column 4
 
         if (!classNumber) continue;
 
         items.push({
           classNumber,
-          failingStudents: failingStudents || '#',
-          percentFailing: percentFailing || 'X%'
+          failingStudents,
+          percentFailing
         });
       }
 
