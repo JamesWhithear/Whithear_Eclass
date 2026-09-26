@@ -12,8 +12,10 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      width: calc(50vw - 20px);
-      max-width: calc(50vw - 20px);
+      width: calc(60vw - 15px);
+      max-width: calc(60vw - 15px);
+      height: calc(50vh - 20px);
+      display: table;
       border-collapse: collapse;
     }
 
@@ -27,7 +29,7 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      width: calc(50vw - 20px);
+      width: calc(40vw - 15px);
       height: calc(50vh - 20px);
       overflow: auto;
       box-sizing: border-box;
@@ -169,6 +171,28 @@
 
     #dataTable tbody tr:last-child td {
       border-bottom: 0;
+    }
+
+  
+    /* Equal top-panel sizing and requested text colors */
+    #clockPanel {
+      box-sizing: border-box;
+    }
+
+    #dataTable {
+      box-sizing: border-box;
+      table-layout: fixed;
+    }
+
+    #dataTable,
+    #dataTable th,
+    #dataTable td {
+      color: #000 !important;
+    }
+
+    #clock,
+    #date {
+      color: #000 !important;
     }
 
   </style>
