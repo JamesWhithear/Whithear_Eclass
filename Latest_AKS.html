@@ -5,7 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Daily Class</title>
   <style>
-    table { width: 100%; border-collapse: collapse; }
+    html, body { margin: 0; width: 100%; min-height: 100%; }
+    body { min-height: 100vh; position: relative; }
+
+    #dataTable {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50vw;
+      max-width: 50vw;
+      border-collapse: collapse;
+    }
+
     table, th, td { border: 1px solid black; }
     th, td { white-space: pre-line; padding: 8px; text-align: left; }
     /* show \n as line breaks in cells */
@@ -14,8 +25,6 @@
   </style>
 </head>
 <body>
-
-<h2 id="pageTitle">Google Sheets Data</h2>
 
 <table id="dataTable">
   <thead></thead>
