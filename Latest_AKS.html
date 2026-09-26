@@ -43,17 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.style.backgroundColor = backColor;
   }
 
-  // Page title / heading
-  const h2 = document.getElementById('pageTitle');
-  if (hasFilter) {
-    document.title = `Daily Class – ${classSeperator}`;
-    if (h2) h2.textContent = `Google Sheets Data – ${classSeperator}`;
-  } else {
-    document.title = 'Daily Class – All';
-    if (h2) h2.textContent = 'Google Sheets Data – All Classes';
-    // NOTE: we DO NOT return; we’ll render all rows when no filter is given
-  }
-
   const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpZrnrbqmMAZqqTFre3fgoZa73ZiYj7XhJzNXSHYhyXIVQb-WjCJfY2K25Rxm28U7JuCdXTbOOOLXy/pub?output=csv';
     
   const proxyUrl = ''; 
