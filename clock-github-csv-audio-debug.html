@@ -192,7 +192,25 @@
 
     #clock,
     #date {
-      color: #000 !important;
+      color: var(--header-color, #FFA500) !important;
+    }
+
+  
+    /* Compact timer footer: only show the next-alarm line */
+    #scheduleLink,
+    #downloadStatus,
+    #audioDebug,
+    #schedulePanel {
+      display: none !important;
+    }
+
+    #next {
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    #countdownBox {
+      padding-bottom: 12px;
     }
 
   </style>
