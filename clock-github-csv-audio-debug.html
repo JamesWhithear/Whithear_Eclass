@@ -3961,6 +3961,36 @@ document.addEventListener("DOMContentLoaded", function () {
     return `${date.getMonth() + 1}/${date.getDate()}`;
   }
 
+  function matchEventsHeightToFailingTable(rowCount) {
+    const bottomLeftPanel = document.getElementById('bottomLeftPanel');
+    const eventsTable = document.getElementById('eventsTable');
+    const failingPanel = document.getElementById('failingStudentsPanel');
+
+    if (!bottomLeftPanel || !eventsTable || !failingPanel) return;
+
+    if (rowCount <= 9) {
+      requestAnimationFrame(() => {
+        const failingHeight = failingPanel.getBoundingClientRect().height;
+
+        if (failingHeight > 0) {
+          bottomLeftPanel.style.height = `${failingHeight}px`;
+          bottomLeftPanel.style.bottom = 'auto';
+          bottomLeftPanel.style.maxHeight = `${failingHeight}px`;
+
+          eventsTable.style.height = '100%';
+          eventsTable.style.maxHeight = '100%';
+        }
+      });
+    } else {
+      bottomLeftPanel.style.height = '';
+      bottomLeftPanel.style.bottom = '18px';
+      bottomLeftPanel.style.maxHeight = '';
+
+      eventsTable.style.height = '';
+      eventsTable.style.maxHeight = '';
+    }
+  }
+
   function renderRows(rows) {
     tbody.innerHTML = '';
 
@@ -3972,6 +4002,7 @@ document.addEventListener("DOMContentLoaded", function () {
       td.style.textAlign = 'center';
       tr.appendChild(td);
       tbody.appendChild(tr);
+      matchEventsHeightToFailingTable(0);
       return;
     }
 
@@ -4003,6 +4034,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       tbody.appendChild(tr);
     });
+
+    matchEventsHeightToFailingTable(rows.length);
   }
 
   async function loadEventsTable() {
@@ -4076,6 +4109,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadEventsTable();
   setInterval(loadEventsTable, 5 * 60 * 1000);
+
+  window.addEventListener('resize', () => {
+    const visibleRows = tbody ? tbody.querySelectorAll('tr').length : 0;
+    matchEventsHeightToFailingTable(visibleRows);
+  });
 })();
 </script>
 
