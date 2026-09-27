@@ -2499,6 +2499,15 @@
       top: 0 !important;
     }
 
+  
+    /* Auto-scroll bottom middle/right panels only when needed */
+    #bottomMiddleCell #rotatingMessagePanel,
+    #bottomRightCell #failingStudentsPanel {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-gutter: stable;
+    }
+
   </style>
 </head>
 
