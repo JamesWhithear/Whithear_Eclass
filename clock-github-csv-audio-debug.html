@@ -2311,12 +2311,12 @@
     /* Keep bottom-left column widths aligned between header and body */
     #eventsTable thead th:nth-child(1),
     #eventsTable tbody td:nth-child(1) {
-      width: 30% !important;
+      width: 25% !important;
     }
 
     #eventsTable thead th:nth-child(2),
     #eventsTable tbody td:nth-child(2) {
-      width: 55% !important;
+      width: 60% !important;
     }
 
     #eventsTable thead th:nth-child(3),
@@ -3958,7 +3958,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const date = parseUsDate(value);
     if (!date) return value || '';
 
-    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+    return `${date.getMonth() + 1}/${date.getDate()}`;
   }
 
   function renderRows(rows) {
