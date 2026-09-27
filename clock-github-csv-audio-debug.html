@@ -708,6 +708,131 @@
       box-sizing: border-box;
     }
 
+  
+    /* Responsive right-side layout: lower panels are attached below progress bar */
+    #rightDashboardColumn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: calc(60vw - 25px);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    #rightTopArea {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #rightLowerPanels {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      margin-top: 20px;
+      align-items: stretch;
+      justify-content: flex-end;
+      box-sizing: border-box;
+    }
+
+    #rightLowerPanels #rotatingMessagePanel,
+    #rightLowerPanels #failingStudentsPanel {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      left: auto !important;
+      transform: none !important;
+      margin: 0 !important;
+      height: 350px !important;
+      box-sizing: border-box;
+    }
+
+    #rightLowerPanels #rotatingMessagePanel {
+      flex: 1 1 0;
+      width: auto !important;
+      min-width: 0 !important;
+      max-width: none !important;
+    }
+
+    #rightLowerPanels #failingStudentsPanel {
+      flex: 0 0 350px;
+      width: 350px !important;
+    }
+
+    /* Allow the rotating panel contents to scale safely */
+    #rotatingMessageInner {
+      height: 100%;
+      min-height: 0;
+    }
+
+    #rotatingMessageImageWrap {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    #rotatingMessageImage {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Responsive behavior when the right column gets narrow */
+    @media (max-width: 1200px) {
+      #rightDashboardColumn {
+        width: calc(62vw - 25px);
+      }
+
+      #rightLowerPanels {
+        gap: 15px;
+      }
+
+      #rightLowerPanels #failingStudentsPanel {
+        flex-basis: 310px;
+        width: 310px !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      body {
+        position: static !important;
+      }
+
+      #clockPanel,
+      #rightDashboardColumn {
+        position: static !important;
+        width: calc(100% - 20px) !important;
+        margin: 10px !important;
+      }
+
+      #clockPanel {
+        height: auto !important;
+      }
+
+      #rightDashboardColumn {
+        display: flex;
+      }
+
+      #rightLowerPanels {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      #rightLowerPanels #rotatingMessagePanel,
+      #rightLowerPanels #failingStudentsPanel {
+        width: 100% !important;
+        flex: 0 0 auto;
+        height: auto !important;
+        min-height: 300px;
+      }
+
+      #semesterProgressSection {
+        width: 100% !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -763,7 +888,17 @@
 </div>
 
 
-<div id="failingStudentsPanel" aria-label="Number of students failing">
+
+<div id="rightLowerPanels">
+  <div id="rotatingMessagePanel" aria-label="Rotating positive message">
+  <div id="rotatingMessageInner">
+    <div id="rotatingMessageText">Loading message...</div>
+    <div id="rotatingMessageImageWrap">
+      <img id="rotatingMessageImage" alt="Rotating positive message image" />
+    </div>
+    <div id="rotatingMessageStatus"></div>
+  </div>
+  <div id="failingStudentsPanel" aria-label="Number of students failing">
   <div id="failingStudentsTitle"># of Students Failing</div>
   <div id="failingStudentsGrid">
     <div class="failing-cell">
@@ -791,6 +926,8 @@
       <div class="failing-value" id="fail-value-5"># (X%)</div>
     </div>
   </div>
+</div>
+
 </div>
 
 
@@ -1729,14 +1866,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-<div id="rotatingMessagePanel" aria-label="Rotating positive message">
-  <div id="rotatingMessageInner">
-    <div id="rotatingMessageText">Loading message...</div>
-    <div id="rotatingMessageImageWrap">
-      <img id="rotatingMessageImage" alt="Rotating positive message image" />
-    </div>
-    <div id="rotatingMessageStatus"></div>
-  </div>
+
 </div>
 
 <script>
