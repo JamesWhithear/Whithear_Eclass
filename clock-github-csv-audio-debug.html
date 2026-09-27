@@ -1339,23 +1339,597 @@
       #bottomRightCell { flex-basis: 20% !important; width: 20% !important; }
     }
 
+  
+    /* =========================================================
+       FIT ALL CONTENT INSIDE THE FIXED PERCENTAGE CELLS
+       ========================================================= */
+
+    /* TOP LEFT: scale clock/timer content to the 50% cell */
+    #topLeftCell #clockPanel {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      align-items: stretch !important;
+      overflow: hidden !important;
+      padding: 6px 14px !important;
+    }
+
+    #sheet2Text {
+      flex: 0 0 auto !important;
+      margin-bottom: 2px !important;
+      font-size: clamp(0.9rem, 1.4vw, 1.35rem) !important;
+    }
+
+    #clock {
+      flex: 0 0 auto !important;
+      margin: 0 !important;
+      font-size: clamp(3.6rem, 7vw, 7rem) !important;
+      line-height: 0.95 !important;
+    }
+
+    #date {
+      flex: 0 0 auto !important;
+      margin-top: 2px !important;
+      font-size: clamp(1rem, 1.55vw, 1.45rem) !important;
+      line-height: 1.05 !important;
+    }
+
+    #countdownBox {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      margin-top: 8px !important;
+      padding: 10px 14px 8px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+
+    #countdownBox .clock-label {
+      flex: 0 0 auto !important;
+      font-size: clamp(0.85rem, 1.25vw, 1.15rem) !important;
+      line-height: 1.05 !important;
+    }
+
+    #remaining {
+      flex: 0 0 auto !important;
+      margin-top: 6px !important;
+      font-size: clamp(2.8rem, 5vw, 5rem) !important;
+      line-height: 0.95 !important;
+    }
+
+    #next {
+      flex: 0 0 auto !important;
+      margin-top: 6px !important;
+      font-size: clamp(0.75rem, 1vw, 1rem) !important;
+      line-height: 1.1 !important;
+    }
+
+    /* TOP RIGHT: table uses remaining height, progress bar stays fully inside top 50% */
+    #topRightInner {
+      overflow: hidden !important;
+    }
+
+    #classTableWrap {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    #dataTable {
+      height: 100% !important;
+    }
+
+    #dataTable thead {
+      height: auto !important;
+    }
+
+    #dataTable tbody tr {
+      height: auto !important;
+    }
+
+    #dataTable th,
+    #dataTable td {
+      padding: 3px !important;
+      line-height: 1.08 !important;
+    }
+
+    #semesterProgressSection {
+      flex: 0 0 auto !important;
+      min-height: 34px !important;
+    }
+
+    #semesterProgressTrack {
+      height: 30px !important;
+      min-height: 30px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    #semesterProgressFill {
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      height: 100% !important;
+      min-height: 100% !important;
+    }
+
+    /* BOTTOM MIDDLE: fit rotating card entirely inside its 20% x 50% cell */
+    #bottomMiddleCell #rotatingMessagePanel {
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    #rotatingMessageInner {
+      padding: 10px !important;
+      gap: 6px !important;
+      overflow: hidden !important;
+    }
+
+    #rotatingMessageText {
+      flex: 0 0 auto !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      font-size: clamp(1rem, 1.65vw, 1.7rem) !important;
+      line-height: 1.05 !important;
+    }
+
+    #rotatingMessageImageWrap {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+    }
+
+    #rotatingMessageImage {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+    }
+
+    #rotatingMessageStatus {
+      flex: 0 0 auto !important;
+      margin: 0 !important;
+      font-size: clamp(0.62rem, 0.75vw, 0.8rem) !important;
+    }
+
+    /* BOTTOM RIGHT: fit the failing table inside its exact 20% x 50% cell */
+    #bottomRightCell #failingStudentsPanel {
+      overflow: hidden !important;
+    }
+
+    #failingStudentsTitle {
+      flex: 0 0 auto !important;
+      padding: 6px 4px !important;
+      font-size: clamp(0.95rem, 1.55vw, 1.45rem) !important;
+    }
+
+    #bottomRightCell #failingStudentsGrid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      grid-template-rows: repeat(3, 1fr) !important;
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      height: auto !important;
+      overflow: hidden !important;
+    }
+
+    #bottomRightCell .failing-cell {
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 5px 3px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+    }
+
+    #bottomRightCell .failing-class {
+      margin: 0 0 4px 0 !important;
+      font-size: clamp(0.75rem, 1vw, 1rem) !important;
+      line-height: 1 !important;
+    }
+
+    #bottomRightCell .failing-value {
+      font-size: clamp(1.1rem, 2vw, 1.9rem) !important;
+      line-height: 1 !important;
+    }
+
+  
+    /* ============================================================
+       FINAL LAYOUT FROM USER SKETCH
+       Outer table:
+         TOP    = 50% height -> 44% / 56%
+         BOTTOM = 50% height -> 60% / 40%
+       Bottom-right 40%:
+         progress bar across top
+         rotating 20% + failing 20% beneath
+       ============================================================ */
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body {
+      min-height: 100vh !important;
+    }
+
+    #dashboardLayout {
+      width: 100vw !important;
+      height: 100vh !important;
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+      table-layout: fixed !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+    }
+
+    #dashboardLayout > tbody {
+      height: 100% !important;
+    }
+
+    #dashboardLayout > tbody > tr {
+      height: 50% !important;
+      max-height: 50% !important;
+    }
+
+    #dashboardLayout > tbody > tr > td {
+      height: 50vh !important;
+      max-height: 50vh !important;
+      padding: 10px !important;
+      border: 0 !important;
+      box-sizing: border-box !important;
+      vertical-align: top !important;
+      overflow: hidden !important;
+      background: transparent !important;
+    }
+
+    #topLeftCell {
+      width: 44% !important;
+    }
+
+    #topRightCell {
+      width: 56% !important;
+    }
+
+    #bottomLeftCell {
+      width: 60% !important;
+    }
+
+    #bottomRightRegion {
+      width: 40% !important;
+    }
+
+    /* TOP LEFT */
+    #topLeftCell #clockPanel {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 6px 14px 10px !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    #sheet2Text {
+      flex: 0 0 auto !important;
+      margin: 0 0 2px !important;
+    }
+
+    #clock {
+      flex: 0 0 auto !important;
+      margin: 0 !important;
+      line-height: .95 !important;
+    }
+
+    #date {
+      flex: 0 0 auto !important;
+      margin-top: 2px !important;
+    }
+
+    #countdownBox {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      margin-top: 8px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+    }
+
+    /* TOP RIGHT CLASS TABLE ONLY */
+    #classTableWrap {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+    }
+
+    #topRightCell #dataTable {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      max-height: 100% !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      table-layout: fixed !important;
+    }
+
+    #dataTable thead th,
+    #dataTable thead td {
+      text-align: center !important;
+      vertical-align: middle !important;
+    }
+
+    #dataTable th:first-child,
+    #dataTable td:first-child {
+      text-align: center !important;
+      vertical-align: middle !important;
+    }
+
+    #dataTable th,
+    #dataTable td {
+      padding: 3px !important;
+      line-height: 1.08 !important;
+    }
+
+    /* BOTTOM LEFT */
+    #bottomLeftPanel {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* BOTTOM RIGHT NESTED TABLE */
+    #bottomRightLayout {
+      width: 100% !important;
+      height: 100% !important;
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+      table-layout: fixed !important;
+      background: transparent !important;
+    }
+
+    #bottomRightLayout,
+    #bottomRightLayout > tbody,
+    #bottomRightLayout > tbody > tr,
+    #bottomRightLayout > tbody > tr > td {
+      border: 0 !important;
+      background: transparent !important;
+    }
+
+    #progressRow {
+      height: 18% !important;
+    }
+
+    #progressRow > td {
+      padding: 0 0 10px 0 !important;
+      box-sizing: border-box !important;
+      vertical-align: top !important;
+    }
+
+    #lowerPanelsRow {
+      height: 82% !important;
+    }
+
+    #lowerPanelsRow > td {
+      width: 50% !important;
+      height: 100% !important;
+      padding: 0 !important;
+      box-sizing: border-box !important;
+      vertical-align: top !important;
+      overflow: hidden !important;
+    }
+
+    #bottomMiddleCell {
+      padding-right: 10px !important;
+    }
+
+    #bottomRightCell {
+      padding-left: 10px !important;
+    }
+
+    /* PROGRESS BAR */
+    #semesterProgressSection {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      box-sizing: border-box !important;
+    }
+
+    #semesterProgressTitle {
+      flex: 0 0 auto !important;
+      margin: 0 !important;
+      white-space: nowrap !important;
+      font-size: clamp(1rem, 1.65vw, 1.75rem) !important;
+    }
+
+    #semesterProgressRow {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      width: auto !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+
+    #semesterProgressTrack {
+      flex: 1 1 auto !important;
+      height: 30px !important;
+      min-height: 30px !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    #semesterProgressFill {
+      position: absolute !important;
+      left: 0 !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      height: 100% !important;
+    }
+
+    /* ROTATING PANEL */
+    #bottomMiddleCell #rotatingMessagePanel {
+      position: static !important;
+      inset: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      height: 100% !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    #rotatingMessageInner {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      padding: 10px !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    #rotatingMessageText {
+      flex: 0 0 auto !important;
+      min-height: 0 !important;
+      margin: 0 0 8px !important;
+      font-size: clamp(.95rem, 1.55vw, 1.65rem) !important;
+    }
+
+    #rotatingMessageImageWrap {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    #rotatingMessageImage {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      object-fit: contain !important;
+    }
+
+    #rotatingMessageStatus {
+      flex: 0 0 auto !important;
+      margin-top: 6px !important;
+      font-size: clamp(.6rem, .7vw, .78rem) !important;
+    }
+
+    /* FAILING STUDENTS */
+    #bottomRightCell #failingStudentsPanel {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    #failingStudentsTitle {
+      flex: 0 0 auto !important;
+      padding: 6px 4px !important;
+      font-size: clamp(.9rem, 1.4vw, 1.35rem) !important;
+    }
+
+    #failingStudentsGrid {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      height: auto !important;
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      grid-template-rows: repeat(3, 1fr) !important;
+      overflow: hidden !important;
+    }
+
+    .failing-cell {
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 4px 3px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+    }
+
+    .failing-class {
+      margin: 0 0 4px !important;
+      font-size: clamp(.7rem, .9vw, .95rem) !important;
+      line-height: 1 !important;
+    }
+
+    .failing-value {
+      font-size: clamp(1rem, 1.8vw, 1.8rem) !important;
+      line-height: 1 !important;
+    }
+
+    /* Prevent older media rules from breaking the percentage layout */
+    @media (max-width: 1200px), (max-width: 900px), (max-width: 760px), (max-height: 620px) {
+      html, body {
+        overflow: hidden !important;
+      }
+
+      #dashboardLayout {
+        min-width: 0 !important;
+        min-height: 0 !important;
+      }
+
+      #dashboardLayout > tbody > tr {
+        height: 50% !important;
+      }
+
+      #topLeftCell { width: 44% !important; }
+      #topRightCell { width: 56% !important; }
+      #bottomLeftCell { width: 60% !important; }
+      #bottomRightRegion { width: 40% !important; }
+    }
+
   </style>
 </head>
 
-<body>
-<table id="dashboardLayout" aria-label="Dashboard layout">
-  <colgroup>
-    <col style="width:44%">
-    <col style="width:16%">
-    <col style="width:20%">
-    <col style="width:20%">
-  </colgroup>
 
+<body>
+<table id="dashboardLayout" aria-label="Dashboard">
   <tbody>
-    <!-- TOP HALF -->
-    <tr class="dashboard-row dashboard-top-row">
-      <!-- 44% wide -->
-      <td id="topLeftCell" class="dashboard-cell" colspan="1">
+
+    <!-- TOP 50% -->
+    <tr id="topHalf">
+      <td id="topLeftCell">
         <div id="clockPanel">
           <div id="sheet2Text"></div>
           <div id="clock">--:--</div>
@@ -1365,7 +1939,6 @@
             <div class="clock-label">
               Time until <span id="alarmName">next alarm</span>
             </div>
-
             <span id="targetLabel" style="display:none;">--</span>
             <div id="remaining">--:--:--</div>
 
@@ -1380,10 +1953,8 @@
                  href="#"
                  aria-expanded="false"
                  aria-controls="schedulePanel">Check Schedules</a>
-
               <div id="downloadStatus">Downloaded file: 0 records — Pending</div>
               <div id="audioDebug">AudioContext: not created</div>
-
               <div id="schedulePanel">
                 <ul id="scheduleList"></ul>
               </div>
@@ -1392,97 +1963,103 @@
         </div>
       </td>
 
-      <!-- remaining 56% wide -->
-      <td id="topRightCell" class="dashboard-cell" colspan="3">
-        <div id="topRightInner">
-          <div id="classTableWrap">
-            <table id="dataTable">
-              <colgroup>
-                <col style="width:14%">
-                <col style="width:43%">
-                <col style="width:43%">
-              </colgroup>
-              <thead></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-
-          <div id="semesterProgressSection" aria-label="Semester progress">
-            <div id="semesterProgressTitle">Semester Progress Bar</div>
-
-            <div id="semesterProgressRow">
-              <div id="semesterProgressTrack"
-                   role="progressbar"
-                   aria-valuemin="0"
-                   aria-valuemax="100"
-                   aria-valuenow="0">
-                <div id="semesterProgressFill"></div>
-              </div>
-
-              <div id="semesterProgressPercent">--%</div>
-            </div>
-          </div>
+      <td id="topRightCell">
+        <div id="classTableWrap">
+          <table id="dataTable">
+            <colgroup>
+              <col style="width:14%">
+              <col style="width:43%">
+              <col style="width:43%">
+            </colgroup>
+            <thead></thead>
+            <tbody></tbody>
+          </table>
         </div>
       </td>
     </tr>
 
-    <!-- BOTTOM HALF -->
-    <tr class="dashboard-row dashboard-bottom-row">
-      <!-- 60% wide = 44% + 16% -->
-      <td id="bottomLeftCell" class="dashboard-cell" colspan="2">
+    <!-- BOTTOM 50% -->
+    <tr id="bottomHalf">
+      <td id="bottomLeftCell">
         <div id="bottomLeftPanel"></div>
       </td>
 
-      <!-- 20% wide -->
-      <td id="bottomMiddleCell" class="dashboard-cell" colspan="1">
-        <div id="rotatingMessagePanel" aria-label="Rotating positive message">
-          <div id="rotatingMessageInner">
-            <div id="rotatingMessageText">Loading message...</div>
+      <td id="bottomRightRegion">
+        <table id="bottomRightLayout">
+          <tbody>
 
-            <div id="rotatingMessageImageWrap">
-              <img id="rotatingMessageImage"
-                   alt="Rotating positive message image">
-            </div>
+            <!-- Progress bar spans the full 40% right region -->
+            <tr id="progressRow">
+              <td colspan="2">
+                <div id="semesterProgressSection" aria-label="Semester progress">
+                  <div id="semesterProgressTitle">Semester Progress Bar</div>
+                  <div id="semesterProgressRow">
+                    <div id="semesterProgressTrack"
+                         role="progressbar"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="0">
+                      <div id="semesterProgressFill"></div>
+                    </div>
+                    <div id="semesterProgressPercent">--%</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-            <div id="rotatingMessageStatus"></div>
-          </div>
-        </div>
-      </td>
+            <!-- Two equal 20% page-width panels -->
+            <tr id="lowerPanelsRow">
+              <td id="bottomMiddleCell">
+                <div id="rotatingMessagePanel" aria-label="Rotating positive message">
+                  <div id="rotatingMessageInner">
+                    <div id="rotatingMessageText">Loading message...</div>
+                    <div id="rotatingMessageImageWrap">
+                      <img id="rotatingMessageImage"
+                           alt="Rotating positive message image">
+                    </div>
+                    <div id="rotatingMessageStatus"></div>
+                  </div>
+                </div>
+              </td>
 
-      <!-- 20% wide -->
-      <td id="bottomRightCell" class="dashboard-cell" colspan="1">
-        <div id="failingStudentsPanel" aria-label="Number of students failing">
-          <div id="failingStudentsTitle"># of Students Failing</div>
+              <td id="bottomRightCell">
+                <div id="failingStudentsPanel" aria-label="Number of students failing">
+                  <div id="failingStudentsTitle"># of Students Failing</div>
+                  <div id="failingStudentsGrid">
+                    <div class="failing-cell">
+                      <div class="failing-class" id="fail-class-0">6th First</div>
+                      <div class="failing-value" id="fail-value-0"># (X%)</div>
+                    </div>
+                    <div class="failing-cell">
+                      <div class="failing-class" id="fail-class-1">6th Second</div>
+                      <div class="failing-value" id="fail-value-1"># (X%)</div>
+                    </div>
+                    <div class="failing-cell">
+                      <div class="failing-class" id="fail-class-2">7th First</div>
+                      <div class="failing-value" id="fail-value-2"># (X%)</div>
+                    </div>
+                    <div class="failing-cell">
+                      <div class="failing-class" id="fail-class-3">7th Second</div>
+                      <div class="failing-value" id="fail-value-3"># (X%)</div>
+                    </div>
+                    <div class="failing-cell">
+                      <div class="failing-class" id="fail-class-4">8th First</div>
+                      <div class="failing-value" id="fail-value-4"># (X%)</div>
+                    </div>
+                    <div class="failing-cell">
+                      <div class="failing-class" id="fail-class-5">8th Second</div>
+                      <div class="failing-value" id="fail-value-5"># (X%)</div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-          <div id="failingStudentsGrid">
-            <div class="failing-cell">
-              <div class="failing-class" id="fail-class-0">6th First</div>
-              <div class="failing-value" id="fail-value-0"># (X%)</div>
-            </div>
-            <div class="failing-cell">
-              <div class="failing-class" id="fail-class-1">6th Second</div>
-              <div class="failing-value" id="fail-value-1"># (X%)</div>
-            </div>
-            <div class="failing-cell">
-              <div class="failing-class" id="fail-class-2">7th First</div>
-              <div class="failing-value" id="fail-value-2"># (X%)</div>
-            </div>
-            <div class="failing-cell">
-              <div class="failing-class" id="fail-class-3">7th Second</div>
-              <div class="failing-value" id="fail-value-3"># (X%)</div>
-            </div>
-            <div class="failing-cell">
-              <div class="failing-class" id="fail-class-4">8th First</div>
-              <div class="failing-value" id="fail-value-4"># (X%)</div>
-            </div>
-            <div class="failing-cell">
-              <div class="failing-class" id="fail-class-5">8th Second</div>
-              <div class="failing-value" id="fail-value-5"># (X%)</div>
-            </div>
-          </div>
-        </div>
+          </tbody>
+        </table>
       </td>
     </tr>
+
   </tbody>
 </table>
 
