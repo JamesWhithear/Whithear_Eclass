@@ -2128,7 +2128,7 @@
     }
 
     #eventsTable thead th {
-      background: var(--table-header-color);
+      background: var(--header-color, #FFA500);
       color: #000;
       font-weight: 700;
       text-align: center;
@@ -2260,7 +2260,7 @@
       width: 100% !important;
       table-layout: fixed !important;
       flex: 0 0 auto !important;
-      background: var(--table-header-color) !important;
+      background: var(--header-color, #FFA500) !important;
     }
 
     #eventsTable thead tr {
@@ -2270,7 +2270,7 @@
 
     /* Match top-right class table header look */
     #eventsTable thead th {
-      background: var(--table-header-color) !important;
+      background: var(--header-color, #FFA500) !important;
       color: #000 !important;
       font-weight: 700 !important;
       text-align: center !important;
@@ -2326,6 +2326,14 @@
 
     #eventsTable tbody td {
       box-sizing: border-box !important;
+    }
+
+  
+    /* Bottom-left header must exactly match top-right header */
+    #eventsTable thead,
+    #eventsTable thead tr,
+    #eventsTable thead th {
+      background: var(--header-color, #FFA500) !important;
     }
 
   </style>
@@ -2424,11 +2432,6 @@
       <td id="bottomLeftCell" colspan="2">
         <div id="bottomLeftPanel">
           <table id="eventsTable" aria-label="Upcoming events and projects">
-            <colgroup>
-              <col style="width:30%">
-              <col style="width:55%">
-              <col style="width:15%">
-            </colgroup>
             <thead>
               <tr>
                 <th>Dates</th>
