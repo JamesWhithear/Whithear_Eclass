@@ -2021,6 +2021,37 @@
       padding: 0 !important;
     }
 
+  
+    /* Spacing refinements from annotated screenshot */
+
+    /* Black arrows: reduce top whitespace */
+    #topLeftCell,
+    #topRightCell {
+      padding-top: 2px !important;
+    }
+
+    #topLeftCell #clockPanel,
+    #topRightCell #topRightInner {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    /* Green arrow at far right: increase right-side whitespace */
+    #topRightCell {
+      padding-right: 30px !important;
+    }
+
+    /* Green arrow at bottom: increase bottom whitespace */
+    #bottomMiddleCell,
+    #bottomRightCell {
+      padding-bottom: 24px !important;
+    }
+
+    #bottomMiddleCell #rotatingMessagePanel,
+    #bottomRightCell #failingStudentsPanel {
+      height: calc(100% - 14px) !important;
+    }
+
   </style>
 </head>
 
