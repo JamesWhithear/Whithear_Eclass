@@ -2180,6 +2180,38 @@
       border-bottom: 0;
     }
 
+  
+    /* Upcoming events table: keep header visible and scroll rows */
+    #bottomLeftPanel {
+      overflow: hidden !important;
+    }
+
+    #eventsTable {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100% !important;
+    }
+
+    #eventsTable thead,
+    #eventsTable tbody tr {
+      display: table !important;
+      width: 100% !important;
+      table-layout: fixed !important;
+    }
+
+    #eventsTable thead {
+      flex: 0 0 auto !important;
+    }
+
+    #eventsTable tbody {
+      display: block !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-gutter: stable;
+    }
+
   </style>
 </head>
 
@@ -3584,7 +3616,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Remove rows that have already ended.
         .filter(item => item.endDateObject && item.endDateObject >= today)
         // End Date descending: latest ending date first.
-        .sort((a, b) => b.endDateObject - a.endDateObject);
+        .sort((a, b) => a.endDateObject - b.endDateObject);
 
       renderRows(filtered);
     } catch (err) {
