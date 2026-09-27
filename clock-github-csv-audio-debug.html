@@ -3944,6 +3944,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
+      const maxDate = new Date(today);
+      maxDate.setDate(maxDate.getDate() + 30);
+
       const filtered = rows
         .slice(1)
         .map(row => ({
@@ -3957,9 +3960,13 @@ document.addEventListener("DOMContentLoaded", function () {
           ...item,
           endDateObject: parseUsDate(item.endDate)
         }))
-        // Remove rows that have already ended.
-        .filter(item => item.endDateObject && item.endDateObject >= today)
-        // End Date descending: latest ending date first.
+        // Keep only rows ending today through 30 days from today, inclusive.
+        .filter(item =>
+          item.endDateObject &&
+          item.endDateObject >= today &&
+          item.endDateObject <= maxDate
+        )
+        // End Date ascending: nearest ending date first.
         .sort((a, b) => a.endDateObject - b.endDateObject);
 
       renderRows(filtered);
