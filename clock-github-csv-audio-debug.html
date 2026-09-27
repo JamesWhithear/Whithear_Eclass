@@ -2345,10 +2345,15 @@
     #bottomLeftPanel {
       margin-top: 0 !important;
     }
-
   
     /* Remove all row/cell padding from both dashboard rows */
-    #topHalf > td,
+    #topHalf > td {
+      padding: 0 !important;
+      margin: 0 !important;
+      height: 45vh !important;
+      max-height: 45vh !important;
+    }
+    
     #bottomHalf > td {
       padding: 0 !important;
       margin: 0 !important;
