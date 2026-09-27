@@ -2508,6 +2508,46 @@
       scrollbar-gutter: stable;
     }
 
+  
+    /* Put scrollbars OUTSIDE the bordered bottom panels */
+    #bottomMiddleCell,
+    #bottomRightCell {
+      overflow: hidden !important;
+    }
+
+    #rotatingMessageScroller,
+    #failingStudentsScroller {
+      position: absolute !important;
+      top: 2px !important;
+      bottom: 18px !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-gutter: stable;
+      box-sizing: border-box !important;
+    }
+
+    #rotatingMessageScroller {
+      left: 12px !important;
+      right: 4px !important;
+    }
+
+    #failingStudentsScroller {
+      left: 12px !important;
+      right: 4px !important;
+    }
+
+    #rotatingMessageScroller #rotatingMessagePanel,
+    #failingStudentsScroller #failingStudentsPanel {
+      position: static !important;
+      width: calc(100% - 8px) !important;
+      height: auto !important;
+      min-height: 100% !important;
+      max-height: none !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      box-sizing: border-box !important;
+    }
+
   </style>
 </head>
 
@@ -2595,6 +2635,7 @@
             </div>
           </div>
         </div>
+        </div>
       </td>
     </tr>
 
@@ -2622,7 +2663,8 @@
 
       <!-- 20% -->
       <td id="bottomMiddleCell" colspan="1">
-        <div id="rotatingMessagePanel" aria-label="Rotating positive message">
+        <div id="rotatingMessageScroller" class="outside-panel-scroller">
+          <div id="rotatingMessagePanel" aria-label="Rotating positive message">
           <div id="rotatingMessageInner">
             <div id="rotatingMessageText">Loading message...</div>
 
@@ -2638,11 +2680,13 @@
             </div>
           </div>
         </div>
+        </div>
       </td>
 
       <!-- 20% -->
       <td id="bottomRightCell" colspan="1">
-        <div id="failingStudentsPanel" aria-label="Number of students failing">
+        <div id="failingStudentsScroller" class="outside-panel-scroller">
+          <div id="failingStudentsPanel" aria-label="Number of students failing">
           <div id="failingStudentsTitle"># of Students Failing</div>
 
           <div id="failingStudentsGrid">
