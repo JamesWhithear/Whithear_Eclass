@@ -2557,6 +2557,65 @@
       max-height: 85% !important;
     }
 
+  
+    /* =========================================================
+       FIX FOUR VISIBLE LAYOUT ISSUES
+       ========================================================= */
+
+    /* 1) Guarantee visible whitespace to the right of the top-right area */
+    #topRightCell {
+      padding-right: 0 !important;
+      overflow: hidden !important;
+    }
+
+    #topRightInner {
+      width: calc(100% - 24px) !important;
+      max-width: calc(100% - 24px) !important;
+      margin-right: 24px !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 2) Give the Upcoming Events scrollbar room so it is not clipped */
+    #bottomLeftCell {
+      overflow: hidden !important;
+    }
+
+    #bottomLeftPanel {
+      left: 10px !important;
+      right: 22px !important;
+      top: 2px !important;
+      bottom: 18px !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      scrollbar-gutter: stable !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 3) Leave a little room under clockPanel so countdownBox bottom is visible */
+    #topLeftCell #clockPanel {
+      height: calc(100% - 10px) !important;
+      max-height: calc(100% - 10px) !important;
+      padding-bottom: 0 !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+    }
+
+    /* 4) Make the failing-students card visibly rounded like the other cards */
+    #failingStudentsScroller #failingStudentsPanel {
+      border-radius: 22px !important;
+      overflow: hidden !important;
+      border: 1px solid var(--header-dark-color, #CC8400) !important;
+      background: var(--row-color, #FFFFFF) !important;
+    }
+
+    #failingStudentsScroller #failingStudentsTitle {
+      border-radius: 21px 21px 0 0 !important;
+    }
+
+    #failingStudentsScroller #failingStudentsGrid {
+      overflow: hidden !important;
+    }
+
   </style>
 </head>
 
