@@ -2052,6 +2052,56 @@
       height: calc(100% - 14px) !important;
     }
 
+  
+    /* Further reduce only the top spacing in the two upper sections */
+    #topLeftCell,
+    #topRightCell {
+      padding-top: 0 !important;
+    }
+
+    #topLeftCell #clockPanel,
+    #topRightCell #topRightInner {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+  
+    #rotatingMessageImageWrap {
+      position: relative !important;
+    }
+
+    .rotating-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 36px;
+      height: 48px;
+      border: 1px solid var(--header-dark-color, #CC8400);
+      border-radius: 10px;
+      background: rgba(255,255,255,.88);
+      color: var(--header-dark-color, #CC8400);
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #rotatingPrev {
+      left: 8px;
+    }
+
+    #rotatingNext {
+      right: 8px;
+    }
+
+    .rotating-arrow:hover {
+      background: rgba(255,255,255,1);
+    }
+
   </style>
 </head>
 
@@ -2156,8 +2206,12 @@
             <div id="rotatingMessageText">Loading message...</div>
 
             <div id="rotatingMessageImageWrap">
+              <button id="rotatingPrev" class="rotating-arrow" type="button" aria-label="Previous message">&#10094;</button>
+
               <img id="rotatingMessageImage"
                    alt="Rotating positive message image">
+
+              <button id="rotatingNext" class="rotating-arrow" type="button" aria-label="Next message">&#10095;</button>
             </div>
 
             <div id="rotatingMessageStatus"></div>
@@ -3091,6 +3145,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const panelText = document.getElementById('rotatingMessageText');
   const panelImage = document.getElementById('rotatingMessageImage');
   const panelStatus = document.getElementById('rotatingMessageStatus');
+  const rotatingPrev = document.getElementById('rotatingPrev');
+  const rotatingNext = document.getElementById('rotatingNext');
 
   const rotatingCsvUrl =
     'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?gid=1240817753&single=true&output=csv';
@@ -3224,6 +3280,23 @@ document.addEventListener("DOMContentLoaded", function () {
       panelStatus.textContent = err?.message || String(err);
     }
   }
+
+
+  function restartRotationTimer() {
+    startRotation();
+  }
+
+  rotatingPrev.addEventListener('click', () => {
+    if (!rotatingItems.length) return;
+    showRotatingItem(rotatingIndex - 1);
+    restartRotationTimer();
+  });
+
+  rotatingNext.addEventListener('click', () => {
+    if (!rotatingItems.length) return;
+    showRotatingItem(rotatingIndex + 1);
+    restartRotationTimer();
+  });
 
   panelImage.addEventListener('error', () => {
     panelStatus.textContent = 'Image could not be loaded';
