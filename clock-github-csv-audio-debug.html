@@ -833,104 +833,386 @@
       }
     }
 
+  
+    /* =========================================================
+       TABLE-BASED RESPONSIVE DASHBOARD LAYOUT
+       4-column base grid: 44% | 16% | 20% | 20%
+       Top:    44% | 56%
+       Bottom: 60% | 20% | 20%
+       ========================================================= */
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    #dashboardLayout {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+      table-layout: fixed !important;
+      position: static !important;
+      background: transparent !important;
+    }
+
+    #dashboardLayout,
+    #dashboardLayout > tbody,
+    #dashboardLayout > tbody > tr,
+    #dashboardLayout > tbody > tr > td {
+      border: 0 !important;
+    }
+
+    #dashboardLayout > tbody > tr > td {
+      padding: 10px !important;
+      vertical-align: top !important;
+      box-sizing: border-box !important;
+      background: transparent !important;
+      overflow: hidden;
+    }
+
+    #dashboardLayout .dashboard-top-row,
+    #dashboardLayout .dashboard-bottom-row {
+      height: 50vh !important;
+    }
+
+    #dashboardLayout .dashboard-cell {
+      height: 50vh !important;
+    }
+
+    /* ---------- TOP LEFT ---------- */
+
+    #topLeftCell #clockPanel {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 6px 18px 12px !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+    }
+
+    #topLeftCell #countdownBox {
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* ---------- TOP RIGHT ---------- */
+
+    #topRightInner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      gap: 15px;
+    }
+
+    #classTableWrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+    }
+
+    #topRightCell #dataTable {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: 100% !important;
+      margin: 0 !important;
+      table-layout: fixed !important;
+      box-sizing: border-box !important;
+    }
+
+    #topRightCell #dataTable thead th,
+    #topRightCell #dataTable thead td {
+      text-align: center !important;
+      vertical-align: middle !important;
+    }
+
+    #topRightCell #dataTable th:first-child,
+    #topRightCell #dataTable td:first-child {
+      text-align: center !important;
+      vertical-align: middle !important;
+    }
+
+    #topRightCell #semesterProgressSection {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      margin: 0 !important;
+      flex: 0 0 auto;
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important;
+      box-sizing: border-box !important;
+    }
+
+    #topRightCell #semesterProgressRow {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+    }
+
+    /* ---------- BOTTOM LEFT ---------- */
+
+    #bottomLeftPanel {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ---------- BOTTOM MIDDLE ---------- */
+
+    #bottomMiddleCell #rotatingMessagePanel {
+      position: static !important;
+      inset: auto !important;
+      transform: none !important;
+      width: 100% !important;
+      max-width: none !important;
+      min-width: 0 !important;
+      height: 100% !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    #bottomMiddleCell #rotatingMessageInner {
+      width: 100%;
+      height: 100% !important;
+      min-height: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      box-sizing: border-box !important;
+    }
+
+    #bottomMiddleCell #rotatingMessageImageWrap {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    #bottomMiddleCell #rotatingMessageImage {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      width: auto !important;
+      height: auto !important;
+      object-fit: contain !important;
+    }
+
+    /* ---------- BOTTOM RIGHT ---------- */
+
+    #bottomRightCell #failingStudentsPanel {
+      position: static !important;
+      inset: auto !important;
+      width: 100% !important;
+      max-width: none !important;
+      height: 100% !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    #bottomRightCell #failingStudentsGrid {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: auto !important;
+    }
+
+    #bottomRightCell .failing-cell {
+      min-height: 0 !important;
+    }
+
+    /* Disable old positional wrappers if any old CSS still targets them */
+    #rightDashboardColumn,
+    #rightTopArea,
+    #rightLowerPanels {
+      position: static !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+    }
+
+    /* On genuinely small screens, keep the percentage geometry but permit scrolling
+       rather than letting panels overlap. */
+    @media (max-width: 760px), (max-height: 620px) {
+      html,
+      body {
+        overflow: auto !important;
+      }
+
+      #dashboardLayout {
+        min-width: 900px !important;
+        min-height: 700px !important;
+      }
+
+      #dashboardLayout .dashboard-top-row,
+      #dashboardLayout .dashboard-bottom-row,
+      #dashboardLayout .dashboard-cell {
+        height: 350px !important;
+      }
+    }
+
   </style>
 </head>
+
 <body>
-
-<div id="clockPanel">
-  <div id="sheet2Text"></div>
-  <div id="clock">--:--</div>
-  <div id="date"></div>
-
-  <div id="countdownBox">
-    <div class="clock-label">
-      Time until <span id="alarmName">next alarm</span>
-    </div>
-    <span id="targetLabel" style="display:none;">--</span>
-    <div id="remaining">--:--:--</div>
-    <div id="next" role="button" tabindex="0" aria-expanded="false" aria-controls="timerExtras"></div>
-
-    <div id="timerExtras">
-      <a id="scheduleLink" href="#" aria-expanded="false" aria-controls="schedulePanel">Check Schedules</a>
-      <div id="downloadStatus">Downloaded file: 0 records — Pending</div>
-      <div id="audioDebug">AudioContext: not created</div>
-
-      <div id="schedulePanel">
-        <ul id="scheduleList"></ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<div id="rightDashboardColumn">
-<div id="rightTopArea">
-<table id="dataTable">
+<table id="dashboardLayout" aria-label="Dashboard layout">
   <colgroup>
-    <col style="width: 14%;">
-    <col style="width: 43%;">
-    <col style="width: 43%;">
+    <col style="width:44%">
+    <col style="width:16%">
+    <col style="width:20%">
+    <col style="width:20%">
   </colgroup>
-  <thead></thead>
-  <tbody></tbody>
+
+  <tbody>
+    <!-- TOP HALF -->
+    <tr class="dashboard-row dashboard-top-row">
+      <!-- 44% wide -->
+      <td id="topLeftCell" class="dashboard-cell" colspan="1">
+        <div id="clockPanel">
+          <div id="sheet2Text"></div>
+          <div id="clock">--:--</div>
+          <div id="date"></div>
+
+          <div id="countdownBox">
+            <div class="clock-label">
+              Time until <span id="alarmName">next alarm</span>
+            </div>
+
+            <span id="targetLabel" style="display:none;">--</span>
+            <div id="remaining">--:--:--</div>
+
+            <div id="next"
+                 role="button"
+                 tabindex="0"
+                 aria-expanded="false"
+                 aria-controls="timerExtras"></div>
+
+            <div id="timerExtras">
+              <a id="scheduleLink"
+                 href="#"
+                 aria-expanded="false"
+                 aria-controls="schedulePanel">Check Schedules</a>
+
+              <div id="downloadStatus">Downloaded file: 0 records — Pending</div>
+              <div id="audioDebug">AudioContext: not created</div>
+
+              <div id="schedulePanel">
+                <ul id="scheduleList"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+
+      <!-- remaining 56% wide -->
+      <td id="topRightCell" class="dashboard-cell" colspan="3">
+        <div id="topRightInner">
+          <div id="classTableWrap">
+            <table id="dataTable">
+              <colgroup>
+                <col style="width:14%">
+                <col style="width:43%">
+                <col style="width:43%">
+              </colgroup>
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div id="semesterProgressSection" aria-label="Semester progress">
+            <div id="semesterProgressTitle">Semester Progress Bar</div>
+
+            <div id="semesterProgressRow">
+              <div id="semesterProgressTrack"
+                   role="progressbar"
+                   aria-valuemin="0"
+                   aria-valuemax="100"
+                   aria-valuenow="0">
+                <div id="semesterProgressFill"></div>
+              </div>
+
+              <div id="semesterProgressPercent">--%</div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    <!-- BOTTOM HALF -->
+    <tr class="dashboard-row dashboard-bottom-row">
+      <!-- 60% wide = 44% + 16% -->
+      <td id="bottomLeftCell" class="dashboard-cell" colspan="2">
+        <div id="bottomLeftPanel"></div>
+      </td>
+
+      <!-- 20% wide -->
+      <td id="bottomMiddleCell" class="dashboard-cell" colspan="1">
+        <div id="rotatingMessagePanel" aria-label="Rotating positive message">
+          <div id="rotatingMessageInner">
+            <div id="rotatingMessageText">Loading message...</div>
+
+            <div id="rotatingMessageImageWrap">
+              <img id="rotatingMessageImage"
+                   alt="Rotating positive message image">
+            </div>
+
+            <div id="rotatingMessageStatus"></div>
+          </div>
+        </div>
+      </td>
+
+      <!-- 20% wide -->
+      <td id="bottomRightCell" class="dashboard-cell" colspan="1">
+        <div id="failingStudentsPanel" aria-label="Number of students failing">
+          <div id="failingStudentsTitle"># of Students Failing</div>
+
+          <div id="failingStudentsGrid">
+            <div class="failing-cell">
+              <div class="failing-class" id="fail-class-0">6th First</div>
+              <div class="failing-value" id="fail-value-0"># (X%)</div>
+            </div>
+            <div class="failing-cell">
+              <div class="failing-class" id="fail-class-1">6th Second</div>
+              <div class="failing-value" id="fail-value-1"># (X%)</div>
+            </div>
+            <div class="failing-cell">
+              <div class="failing-class" id="fail-class-2">7th First</div>
+              <div class="failing-value" id="fail-value-2"># (X%)</div>
+            </div>
+            <div class="failing-cell">
+              <div class="failing-class" id="fail-class-3">7th Second</div>
+              <div class="failing-value" id="fail-value-3"># (X%)</div>
+            </div>
+            <div class="failing-cell">
+              <div class="failing-class" id="fail-class-4">8th First</div>
+              <div class="failing-value" id="fail-value-4"># (X%)</div>
+            </div>
+            <div class="failing-cell">
+              <div class="failing-class" id="fail-class-5">8th Second</div>
+              <div class="failing-value" id="fail-value-5"># (X%)</div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
 </table>
-
-<div id="semesterProgressSection" aria-label="Semester progress">
-  <div id="semesterProgressTitle">Semester Progress Bar</div>
-  <div id="semesterProgressRow">
-    <div id="semesterProgressTrack" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      <div id="semesterProgressFill"></div>
-    </div>
-    <div id="semesterProgressPercent">--%</div>
-  </div>
-</div>
-</div>
-
-
-
-<div id="rightLowerPanels">
-  <div id="rotatingMessagePanel" aria-label="Rotating positive message">
-  <div id="rotatingMessageInner">
-    <div id="rotatingMessageText">Loading message...</div>
-    <div id="rotatingMessageImageWrap">
-      <img id="rotatingMessageImage" alt="Rotating positive message image" />
-    </div>
-    <div id="rotatingMessageStatus"></div>
-  </div>
-  <div id="failingStudentsPanel" aria-label="Number of students failing">
-  <div id="failingStudentsTitle"># of Students Failing</div>
-  <div id="failingStudentsGrid">
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-0">6th First</div>
-      <div class="failing-value" id="fail-value-0"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-1">6th Second</div>
-      <div class="failing-value" id="fail-value-1"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-2">7th First</div>
-      <div class="failing-value" id="fail-value-2"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-3">7th Second</div>
-      <div class="failing-value" id="fail-value-3"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-4">8th First</div>
-      <div class="failing-value" id="fail-value-4"># (X%)</div>
-    </div>
-    <div class="failing-cell">
-      <div class="failing-class" id="fail-class-5">8th Second</div>
-      <div class="failing-value" id="fail-value-5"># (X%)</div>
-    </div>
-  </div>
-</div>
-
-</div>
-
-
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -1811,63 +2093,9 @@ document.addEventListener("DOMContentLoaded", function () {
   update();
   setInterval(update, 250);
 
-
-  function syncRightTopAreaHeight() {
-    const countdownBox = document.getElementById('countdownBox');
-    const rightTopArea = document.getElementById('rightTopArea');
-    const dataTable = document.getElementById('dataTable');
-    const progressSection = document.getElementById('semesterProgressSection');
-
-    if (!countdownBox || !rightTopArea || !dataTable || !progressSection) return;
-
-    const rightTop = rightTopArea.getBoundingClientRect().top;
-    const timerBottom = countdownBox.getBoundingClientRect().bottom;
-
-    const availableHeight = Math.max(0, timerBottom - rightTop);
-    rightTopArea.style.height = availableHeight + 'px';
-
-    // Progress section keeps its natural height.
-    const progressHeight = progressSection.getBoundingClientRect().height;
-
-    // Leave exactly 15px between table bottom and progress top.
-    const tableHeight = Math.max(
-      dataTable.scrollHeight,
-      availableHeight - progressHeight - 15
-    );
-
-    dataTable.style.height = tableHeight + 'px';
-
-    // Distribute any extra height among body rows so the table fills the space.
-    const headerHeight = dataTable.tHead ? dataTable.tHead.getBoundingClientRect().height : 0;
-    const bodyRows = dataTable.tBodies[0]
-      ? Array.from(dataTable.tBodies[0].rows)
-      : [];
-
-    if (bodyRows.length) {
-      const bodyHeight = Math.max(0, tableHeight - headerHeight);
-      const rowHeight = bodyHeight / bodyRows.length;
-
-      for (const row of bodyRows) {
-        row.style.height = rowHeight + 'px';
-      }
-    }
-  }
-
-  window.addEventListener('load', syncRightTopAreaHeight);
-  window.addEventListener('resize', syncRightTopAreaHeight);
-
-  // Re-sync after remote content is likely to have populated.
-  setTimeout(syncRightTopAreaHeight, 500);
-  setTimeout(syncRightTopAreaHeight, 1500);
-
 })();
 </script>
 
-
-
-
-
-</div>
 
 <script>
 (() => {
