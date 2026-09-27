@@ -589,6 +589,68 @@
       margin-top: 20px !important;
     }
 
+  
+    /* Rotating bottom-middle message panel */
+    #rotatingMessagePanel {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      width: min(420px, 28vw);
+      min-width: 300px;
+      background: var(--row-color, #FFFFFF);
+      border: 1px solid var(--header-dark-color, #CC8400);
+      border-radius: 22px;
+      box-sizing: border-box;
+      overflow: hidden;
+      color: #000;
+    }
+
+    #rotatingMessageInner {
+      padding: 16px 18px 18px;
+      text-align: center;
+    }
+
+    #rotatingMessageText {
+      margin: 0 0 14px 0;
+      color: var(--header-color, #FFA500);
+      font-size: clamp(1.25rem, 2vw, 2rem);
+      line-height: 1.15;
+      font-weight: 700;
+      min-height: 2.3em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    #rotatingMessageImageWrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 210px;
+    }
+
+    #rotatingMessageImage {
+      max-width: 100%;
+      max-height: 260px;
+      width: auto;
+      height: auto;
+      display: block;
+      border: 1px solid var(--header-dark-color, #CC8400);
+      border-radius: 8px;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    #rotatingMessageStatus {
+      margin-top: 10px;
+      color: #666;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      min-height: 1.2em;
+    }
+
   </style>
 </head>
 <body>
@@ -1608,6 +1670,165 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
+
+
+<div id="rotatingMessagePanel" aria-label="Rotating positive message">
+  <div id="rotatingMessageInner">
+    <div id="rotatingMessageText">Loading message...</div>
+    <div id="rotatingMessageImageWrap">
+      <img id="rotatingMessageImage" alt="Rotating positive message image" />
+    </div>
+    <div id="rotatingMessageStatus"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const panelText = document.getElementById('rotatingMessageText');
+  const panelImage = document.getElementById('rotatingMessageImage');
+  const panelStatus = document.getElementById('rotatingMessageStatus');
+
+  const rotatingCsvUrl =
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?gid=1240817753&single=true&output=csv';
+
+  let rotatingItems = [];
+  let rotatingIndex = 0;
+  let rotationIntervalId = null;
+
+  function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let cell = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+
+      if (inQuotes) {
+        if (ch === '"' && text[i + 1] === '"') {
+          cell += '"';
+          i++;
+        } else if (ch === '"') {
+          inQuotes = false;
+        } else {
+          cell += ch;
+        }
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ',') {
+        row.push(cell);
+        cell = '';
+      } else if (ch === '\n') {
+        row.push(cell.replace(/\r$/, ''));
+        rows.push(row);
+        row = [];
+        cell = '';
+      } else {
+        cell += ch;
+      }
+    }
+
+    row.push(cell.replace(/\r$/, ''));
+    if (row.some(v => String(v).trim() !== '')) rows.push(row);
+    return rows;
+  }
+
+  function normalizeEnabled(value) {
+    return String(value ?? '').trim().toLowerCase() === 'yes';
+  }
+
+  function showRotatingItem(index) {
+    if (!rotatingItems.length) {
+      panelText.textContent = 'No enabled messages found';
+      panelImage.removeAttribute('src');
+      panelImage.style.display = 'none';
+      panelStatus.textContent = '';
+      return;
+    }
+
+    const safeIndex = ((index % rotatingItems.length) + rotatingItems.length) % rotatingItems.length;
+    rotatingIndex = safeIndex;
+
+    const item = rotatingItems[safeIndex];
+    panelText.textContent = item.message || '';
+    panelImage.style.display = 'block';
+    panelImage.src = item.imageUrl || '';
+    panelImage.alt = item.message ? ('Image for ' + item.message) : 'Rotating message image';
+    panelStatus.textContent = rotatingItems.length > 1
+      ? 'Rotating every 2 minutes • ' + (safeIndex + 1) + ' of ' + rotatingItems.length
+      : '';
+  }
+
+  function startRotation() {
+    if (rotationIntervalId) {
+      clearInterval(rotationIntervalId);
+      rotationIntervalId = null;
+    }
+
+    if (rotatingItems.length > 1) {
+      rotationIntervalId = setInterval(() => {
+        showRotatingItem(rotatingIndex + 1);
+      }, 2 * 60 * 1000);
+    }
+  }
+
+  async function loadRotatingMessages() {
+    try {
+      const response = await fetch(rotatingCsvUrl + '&_=' + Date.now(), {
+        cache: 'no-store'
+      });
+
+      if (!response.ok) {
+        throw new Error('Rotating message CSV returned HTTP ' + response.status + ' ' + response.statusText);
+      }
+
+      const csvText = await response.text();
+      const rows = parseCSV(csvText);
+      const items = [];
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length < 3) continue;
+
+        const message = String(row[0] ?? '').trim();
+        const imageUrl = String(row[1] ?? '').trim();
+        const enabled = String(row[2] ?? '').trim();
+
+        if (!message || !imageUrl) continue;
+        if (!normalizeEnabled(enabled)) continue;
+
+        items.push({ message, imageUrl });
+      }
+
+      rotatingItems = items;
+
+      if (!rotatingItems.length) {
+        showRotatingItem(0);
+        startRotation();
+        return;
+      }
+
+      if (rotatingIndex >= rotatingItems.length) rotatingIndex = 0;
+
+      showRotatingItem(rotatingIndex);
+      startRotation();
+    } catch (err) {
+      console.error('Rotating message download failed:', err);
+      panelText.textContent = 'Unable to load message';
+      panelImage.removeAttribute('src');
+      panelImage.style.display = 'none';
+      panelStatus.textContent = err?.message || String(err);
+    }
+  }
+
+  panelImage.addEventListener('error', () => {
+    panelStatus.textContent = 'Image could not be loaded';
+  });
+
+  loadRotatingMessages();
+  setInterval(loadRotatingMessages, 5 * 60 * 1000);
+})();
+</script>
 
 </body>
 </html>
