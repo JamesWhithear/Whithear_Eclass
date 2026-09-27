@@ -2104,6 +2104,82 @@
       line-height: 1.2;
     }
 
+  
+    /* Bottom-left upcoming events/projects table */
+    #bottomLeftPanel {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+
+    #eventsTable {
+      width: 100% !important;
+      height: 100% !important;
+      border-collapse: separate !important;
+      border-spacing: 0 !important;
+      table-layout: fixed !important;
+      background: #fff;
+      border: 2px solid var(--header-dark-color);
+      border-radius: 18px;
+      overflow: hidden;
+      color: #000;
+    }
+
+    #eventsTable thead th {
+      background: var(--table-header-color);
+      color: #000;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px 8px;
+      border-right: 1px solid var(--header-dark-color);
+      border-bottom: 2px solid var(--header-dark-color);
+    }
+
+    #eventsTable thead th:last-child {
+      border-right: 0;
+    }
+
+    #eventsTable tbody {
+      background: #fff;
+    }
+
+    #eventsTable tbody tr {
+      background: #fff;
+    }
+
+    #eventsTable tbody tr.current-project {
+      background: var(--highlight-color, #fff2a8) !important;
+    }
+
+    #eventsTable tbody tr.current-project td {
+      background: var(--highlight-color, #fff2a8) !important;
+    }
+
+    #eventsTable td {
+      padding: 5px 8px;
+      border-right: 1px solid var(--header-dark-color);
+      border-bottom: 1px solid var(--header-dark-color);
+      vertical-align: middle;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    #eventsTable td:last-child {
+      border-right: 0;
+      text-align: center;
+    }
+
+    #eventsTable td:first-child {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    #eventsTable tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
   </style>
 </head>
 
@@ -2198,7 +2274,27 @@
     <tr id="bottomHalf">
       <!-- 60% -->
       <td id="bottomLeftCell" colspan="2">
-        <div id="bottomLeftPanel"></div>
+        <div id="bottomLeftPanel">
+          <table id="eventsTable" aria-label="Upcoming events and projects">
+            <colgroup>
+              <col style="width:30%">
+              <col style="width:55%">
+              <col style="width:15%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Dates</th>
+                <th>Description</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTableBody">
+              <tr>
+                <td colspan="3">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </td>
 
       <!-- 20% -->
@@ -2260,6 +2356,23 @@
 </table>
 
 <script>
+
+  /* URL-driven highlight color for current projects */
+  (function setHighlightColorFromUrl() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const highlightColor =
+        params.get('Highlight') ||
+        params.get('highlight') ||
+        '#fff2a8';
+
+      document.documentElement.style.setProperty('--highlight-color', highlightColor);
+    } catch (e) {
+      document.documentElement.style.setProperty('--highlight-color', '#fff2a8');
+    }
+  })();
+
+
 document.addEventListener("DOMContentLoaded", function () {
   // Helper to convert <br>, <br/>, <br /> (any case) -> \n
   const normalize = s => (s || '').replace(/<br\s*\/?>/gi, '\n');
@@ -3311,6 +3424,184 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadRotatingMessages();
   setInterval(loadRotatingMessages, 5 * 60 * 1000);
+})();
+</script>
+
+
+<script>
+(function () {
+  const EVENTS_CSV_URL =
+    'https://docs.google.com/spreadsheets/d/e/2PACX-1vScGM09OgFDEAfWST9DrmgMP7ivgxrKFxf3uEKLg9YFWCXtzUxn2R53LswilC82cm2ECNmCrzWihuBY/pub?output=csv&gid=1290222315';
+
+  const tbody = document.getElementById('eventsTableBody');
+
+  function parseCsvLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+
+      if (ch === '"') {
+        if (inQuotes && line[i + 1] === '"') {
+          current += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (ch === ',' && !inQuotes) {
+        result.push(current);
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+
+    result.push(current);
+    return result;
+  }
+
+  function parseCsv(text) {
+    return text
+      .replace(/\r/g, '')
+      .split('\n')
+      .filter(line => line.trim() !== '')
+      .map(parseCsvLine);
+  }
+
+  function parseUsDate(value) {
+    if (!value) return null;
+
+    const parts = value.trim().split('/');
+    if (parts.length !== 3) return null;
+
+    const month = Number(parts[0]);
+    const day = Number(parts[1]);
+    let year = Number(parts[2]);
+
+    if (year < 100) year += 2000;
+
+    const date = new Date(year, month - 1, day);
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }
+
+  function formatDisplayDate(value) {
+    const date = parseUsDate(value);
+    if (!date) return value || '';
+
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  }
+
+  function renderRows(rows) {
+    tbody.innerHTML = '';
+
+    if (!rows.length) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 3;
+      td.textContent = 'No upcoming events or projects';
+      td.style.textAlign = 'center';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    rows.forEach(item => {
+      const tr = document.createElement('tr');
+
+      if (item.currentProject.toLowerCase() === 'yes') {
+        tr.classList.add('current-project');
+      }
+
+      const datesTd = document.createElement('td');
+      const descriptionTd = document.createElement('td');
+      const gradeTd = document.createElement('td');
+
+      const startText = formatDisplayDate(item.startDate);
+      const endText = formatDisplayDate(item.endDate);
+
+      datesTd.textContent =
+        startText === endText
+          ? startText
+          : `${startText} - ${endText}`;
+
+      descriptionTd.textContent = item.description;
+      gradeTd.textContent = item.grade;
+
+      tr.appendChild(datesTd);
+      tr.appendChild(descriptionTd);
+      tr.appendChild(gradeTd);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function loadEventsTable() {
+    try {
+      const response = await fetch(EVENTS_CSV_URL, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const csvText = await response.text();
+      const rows = parseCsv(csvText);
+
+      if (rows.length < 2) {
+        renderRows([]);
+        return;
+      }
+
+      const headers = rows[0].map(h => h.trim());
+
+      const gradeIndex = headers.indexOf('Grade');
+      const descriptionIndex = headers.indexOf('Description');
+      const startIndex = headers.indexOf('Start Date');
+      const endIndex = headers.indexOf('End Date');
+      const currentIndex = headers.indexOf('Current Project');
+
+      if ([gradeIndex, descriptionIndex, startIndex, endIndex, currentIndex].some(i => i < 0)) {
+        throw new Error('Required columns were not found in the events CSV');
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const filtered = rows
+        .slice(1)
+        .map(row => ({
+          grade: (row[gradeIndex] || '').trim(),
+          description: (row[descriptionIndex] || '').trim(),
+          startDate: (row[startIndex] || '').trim(),
+          endDate: (row[endIndex] || '').trim(),
+          currentProject: (row[currentIndex] || '').trim()
+        }))
+        .map(item => ({
+          ...item,
+          endDateObject: parseUsDate(item.endDate)
+        }))
+        // Remove rows that have already ended.
+        .filter(item => item.endDateObject && item.endDateObject >= today)
+        // End Date descending: latest ending date first.
+        .sort((a, b) => b.endDateObject - a.endDateObject);
+
+      renderRows(filtered);
+    } catch (err) {
+      tbody.innerHTML = '';
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 3;
+      td.textContent = 'Unable to load upcoming events';
+      td.style.textAlign = 'center';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      console.error('Upcoming events table error:', err);
+    }
+  }
+
+  loadEventsTable();
+  setInterval(loadEventsTable, 5 * 60 * 1000);
 })();
 </script>
 
