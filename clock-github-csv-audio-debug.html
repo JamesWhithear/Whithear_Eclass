@@ -2212,6 +2212,122 @@
       scrollbar-gutter: stable;
     }
 
+  
+    /* =========================================================
+       ALIGN ALL THREE BOTTOM PANELS + MATCH TABLE HEADER STYLING
+       ========================================================= */
+
+    /* Give all three bottom cells the same vertical spacing */
+    #bottomLeftCell,
+    #bottomMiddleCell,
+    #bottomRightCell {
+      padding-top: 10px !important;
+      padding-bottom: 24px !important;
+      vertical-align: top !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Make all three visible bottom panels exactly fill the same height */
+    #bottomLeftPanel,
+    #bottomMiddleCell #rotatingMessagePanel,
+    #bottomRightCell #failingStudentsPanel {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      max-height: 100% !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+      position: static !important;
+      transform: none !important;
+    }
+
+    /* Bottom-left table itself fills the panel with no blank area above header */
+    #eventsTable {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+      border: 1px solid var(--header-dark-color) !important;
+      border-radius: 18px !important;
+      background: #fff !important;
+    }
+
+    #eventsTable thead {
+      display: table !important;
+      width: 100% !important;
+      table-layout: fixed !important;
+      flex: 0 0 auto !important;
+      background: var(--table-header-color) !important;
+    }
+
+    #eventsTable thead tr {
+      display: table-row !important;
+      width: 100% !important;
+    }
+
+    /* Match top-right class table header look */
+    #eventsTable thead th {
+      background: var(--table-header-color) !important;
+      color: #000 !important;
+      font-weight: 700 !important;
+      text-align: center !important;
+      vertical-align: middle !important;
+      padding: 4px 6px !important;
+      line-height: 1.05 !important;
+      border-right: 1px solid var(--header-dark-color) !important;
+      border-bottom: 1px solid var(--header-dark-color) !important;
+      font-size: inherit !important;
+    }
+
+    #eventsTable thead th:first-child {
+      border-top-left-radius: 16px !important;
+    }
+
+    #eventsTable thead th:last-child {
+      border-right: 0 !important;
+      border-top-right-radius: 16px !important;
+    }
+
+    /* Scroll only the event rows, keeping orange header fixed */
+    #eventsTable tbody {
+      display: block !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      background: #fff !important;
+      scrollbar-gutter: stable;
+    }
+
+    #eventsTable tbody tr {
+      display: table !important;
+      width: 100% !important;
+      table-layout: fixed !important;
+    }
+
+    /* Keep bottom-left column widths aligned between header and body */
+    #eventsTable thead th:nth-child(1),
+    #eventsTable tbody td:nth-child(1) {
+      width: 30% !important;
+    }
+
+    #eventsTable thead th:nth-child(2),
+    #eventsTable tbody td:nth-child(2) {
+      width: 55% !important;
+    }
+
+    #eventsTable thead th:nth-child(3),
+    #eventsTable tbody td:nth-child(3) {
+      width: 15% !important;
+    }
+
+    #eventsTable tbody td {
+      box-sizing: border-box !important;
+    }
+
   </style>
 </head>
 
