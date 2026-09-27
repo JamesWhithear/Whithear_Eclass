@@ -651,6 +651,63 @@
       min-height: 1.2em;
     }
 
+  
+    /* Match rotating panel to failing-students panel */
+    #rotatingMessagePanel {
+      position: absolute !important;
+      left: auto !important;
+      right: 390px !important;   /* ~20px left of a ~350px failing table */
+      bottom: 20px !important;
+      transform: none !important;
+      width: 360px !important;
+      height: 350px !important;
+      min-width: 0 !important;
+      max-width: none !important;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #rotatingMessageInner {
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 16px 16px;
+    }
+
+    #rotatingMessageText {
+      flex: 0 0 auto;
+      margin-bottom: 10px;
+      min-height: 0;
+    }
+
+    #rotatingMessageImageWrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #rotatingMessageImage {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+
+    #rotatingMessageStatus {
+      flex: 0 0 auto;
+      margin-top: 8px;
+    }
+
+    /* Keep failing panel at a matching fixed height */
+    #failingStudentsPanel {
+      height: 350px !important;
+      width: 350px !important;
+      box-sizing: border-box;
+    }
+
   </style>
 </head>
 <body>
