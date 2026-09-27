@@ -1993,6 +1993,34 @@
       gap: 7px !important;             /* about half the previous 15px */
     }
 
+  
+    /* Remove extra white space above the two top sections */
+    #topLeftCell,
+    #topRightCell {
+      padding-top: 0 !important;
+      vertical-align: top !important;
+    }
+
+    #topLeftCell #clockPanel,
+    #topRightCell #topRightInner {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+    }
+
+    /* Keep the expanded schedule from growing the timer box */
+    #schedulePanel.show {
+      display: block !important;
+      max-height: 140px !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      overscroll-behavior: contain;
+    }
+
+    #scheduleList {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
   </style>
 </head>
 
