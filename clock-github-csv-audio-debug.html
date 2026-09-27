@@ -2425,6 +2425,80 @@
       background: var(--header-color, #FFA500) !important;
     }
 
+  
+    /* =========================================================
+       FINAL SPACING ADJUSTMENT FROM ANNOTATED SCREENSHOT
+       ========================================================= */
+
+    /* Add more space between the top-right table and the right edge */
+    #topRightCell {
+      padding-right: 18px !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Make bottom cells deterministic containers */
+    #bottomLeftCell,
+    #bottomMiddleCell,
+    #bottomRightCell {
+      position: relative !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      vertical-align: top !important;
+      overflow: visible !important;
+    }
+
+    /* Remove the large vertical gap above the bottom-left table,
+       while adding horizontal spacing around it */
+    #bottomLeftPanel {
+      position: absolute !important;
+      top: 2px !important;
+      bottom: 18px !important;
+      left: 12px !important;
+      right: 12px !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Keep the rotating panel aligned with the events table,
+       with added space on both sides */
+    #bottomMiddleCell #rotatingMessagePanel {
+      position: absolute !important;
+      top: 2px !important;
+      bottom: 18px !important;
+      left: 12px !important;
+      right: 12px !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      transform: none !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Keep the failing panel aligned with the other two,
+       with added left/right breathing room */
+    #bottomRightCell #failingStudentsPanel {
+      position: absolute !important;
+      top: 2px !important;
+      bottom: 18px !important;
+      left: 12px !important;
+      right: 14px !important;
+      width: auto !important;
+      height: auto !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Events table begins immediately at the top of its panel */
+    #eventsTable {
+      margin-top: 0 !important;
+      top: 0 !important;
+    }
+
   </style>
 </head>
 
