@@ -2717,12 +2717,46 @@
       overflow: hidden !important;
     }
 
+  
+    /* Full-screen alarm overlay */
+    #alarmOverlay {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 999999 !important;
+      display: none;
+      align-items: center !important;
+      justify-content: center !important;
+      background: yellow !important;
+      padding: 5vw !important;
+      box-sizing: border-box !important;
+      text-align: center !important;
+    }
+
+    #alarmOverlay.show {
+      display: flex !important;
+    }
+
+    #alarmOverlayText {
+      color: red !important;
+      font-family: Arial, sans-serif !important;
+      font-size: clamp(72px, 11vw, 220px) !important;
+      font-weight: 900 !important;
+      line-height: 1.05 !important;
+      text-transform: uppercase !important;
+      overflow-wrap: anywhere !important;
+    }
+
   </style>
 </head>
 
 
 
 <body>
+
+  <div id="alarmOverlay" role="alert" aria-live="assertive" aria-hidden="true">
+    <div id="alarmOverlayText"></div>
+  </div>
+
 <table id="dashboardLayout" aria-label="Dashboard">
   <colgroup>
     <col style="width:44%">
@@ -3537,6 +3571,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  let alarmOverlayTimeout = null;
+
+  function showAlarmOverlay(alarmName) {
+    const overlay = document.getElementById('alarmOverlay');
+    const overlayText = document.getElementById('alarmOverlayText');
+    if (!overlay || !overlayText) return;
+
+    overlayText.textContent = alarmName || 'ALARM';
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+
+    if (alarmOverlayTimeout) {
+      clearTimeout(alarmOverlayTimeout);
+    }
+
+    alarmOverlayTimeout = setTimeout(() => {
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden', 'true');
+      alarmOverlayTimeout = null;
+    }, 60000);
+  }
+
   function alarmKeyFor(dateObj, item) {
     const y = dateObj.getFullYear();
     const m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -3573,6 +3629,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           if (!triggeredAlarms.has(key)) {
             triggeredAlarms.add(key);
+            showAlarmOverlay(item.name);
             playAlarm();
           }
         }
