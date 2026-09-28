@@ -2693,6 +2693,30 @@
       padding-bottom: 10px !important;
     }
 
+  
+    /* Failing Students: border/color belongs to title + grid, not outer panel */
+    #failingStudentsScroller #failingStudentsPanel {
+      border: none !important;
+      background: transparent !important;
+      border-radius: 0 !important;
+      overflow: visible !important;
+    }
+
+    #failingStudentsScroller #failingStudentsTitle {
+      background: var(--header-color, #FFA500) !important;
+      border: 1px solid var(--header-dark-color, #CC8400) !important;
+      border-radius: 22px 22px 0 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    #failingStudentsScroller #failingStudentsGrid {
+      background: var(--row-color, #FFFFFF) !important;
+      border: 1px solid var(--header-dark-color, #CC8400) !important;
+      border-radius: 0 0 22px 22px !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+    }
+
   </style>
 </head>
 
