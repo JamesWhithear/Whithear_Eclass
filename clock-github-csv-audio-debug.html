@@ -91,6 +91,57 @@
       font-size: clamp(.8rem, 1.1vw, 1rem);
     }
 
+    #scheduleLink {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--header-color, #a8bdf7);
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    #schedulePanel {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: var(--panel-color, #1d2540);
+      border: 1px solid var(--header-color, #3b496f);
+      border-radius: 14px;
+      text-align: left;
+    }
+
+    #schedulePanel.show { display: block; }
+
+    #scheduleList {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #scheduleList li {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(168,189,247,.16);
+      font-size: .9rem;
+    }
+
+    #scheduleList li:last-child { border-bottom: 0; }
+
+    #scheduleList .alarm-time {
+      color: var(--header-color, #96e4d7);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    #downloadStatus,
+    #audioDebug {
+      margin-top: 7px;
+      color: #c0c9e4;
+      font-size: .75rem;
+    }
+
   
     /* Timer-like table styling */
     #dataTable {
@@ -166,10 +217,41 @@
       text-decoration: underline;
     }
 
+    #timerExtras {
+      display: none;
+      margin-top: 8px;
+    }
+
+    #timerExtras.show {
+      display: block;
+    }
+
+    #schedulePanel {
+      display: none;
+    }
+
+    #schedulePanel.show {
+      display: block;
+    }
+
     #countdownBox {
       padding-bottom: 12px;
     }
 
+  
+    #timerExtras,
+    #timerExtras a,
+    #downloadStatus,
+    #audioDebug,
+    #schedulePanel,
+    #schedulePanel h3,
+    #scheduleList,
+    #scheduleList li,
+    #scheduleList .alarm-time {
+      color: #000 !important;
+    }
+
+  
     #dataTable thead th,
     #dataTable thead td {
       font-size: 1.25rem;
@@ -1926,6 +2008,18 @@
     }
 
     /* Keep the expanded schedule from growing the timer box */
+    #schedulePanel.show {
+      display: block !important;
+      max-height: 140px !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      overscroll-behavior: contain;
+    }
+
+    #scheduleList {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
 
   
     /* Spacing refinements from annotated screenshot */
@@ -2569,6 +2663,15 @@
       width: 100% !important;
     }
 
+  
+    /* Keep these elements in the DOM, but hide them visually */
+    #scheduleLink,
+    #timerExtras,
+    #downloadStatus,
+    #audioDebug {
+      display: none !important;
+    }
+
   </style>
 </head>
 
@@ -2604,7 +2707,23 @@
 
             <div id="next"
                  role="button"
-                 tabindex="0"></div>
+                 tabindex="0"
+                 aria-expanded="false"
+                 aria-controls="timerExtras"></div>
+
+            <div id="timerExtras">
+              <a id="scheduleLink"
+                 href="#"
+                 aria-expanded="false"
+                 aria-controls="schedulePanel">Check Schedules</a>
+
+              <div id="downloadStatus">Downloaded file: 0 records — Pending</div>
+              <div id="audioDebug">AudioContext: not created</div>
+
+              <div id="schedulePanel">
+                <ul id="scheduleList"></ul>
+              </div>
+            </div>
           </div>
         </div>
       </td>
@@ -3084,8 +3203,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const date = document.getElementById('date');
   const remaining = document.getElementById('remaining');
   const next = document.getElementById('next');
+  const timerExtras = document.getElementById('timerExtras');
   const targetLabel = document.getElementById('targetLabel');
   const alarmName = document.getElementById('alarmName');
+  const scheduleLink = document.getElementById('scheduleLink');
+  const schedulePanel = document.getElementById('schedulePanel');
+  const scheduleList = document.getElementById('scheduleList');
+  const downloadStatus = document.getElementById('downloadStatus');
+  const audioDebug = document.getElementById('audioDebug');
 
   const pad = n => String(n).padStart(2, '0');
 
@@ -3160,6 +3285,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }).format(d);
   }
 
+  function renderScheduleList() {
+    scheduleList.innerHTML = '';
+
+    for (const item of schedule) {
+      const li = document.createElement('li');
+
+      const name = document.createElement('span');
+      name.textContent = item.name;
+
+      const time = document.createElement('span');
+      time.className = 'alarm-time';
+      time.textContent = formatMinutes(item.minutes);
+
+      li.appendChild(name);
+      li.appendChild(time);
+      scheduleList.appendChild(li);
+    }
+  }
 
   function chooseNextAlarm(now = new Date()) {
     if (!schedule.length) {
@@ -3272,7 +3415,11 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error('CSV loaded, but no valid alarm times were found in column B');
       }
 
+      downloadStatus.textContent =
+        `Downloaded file: ${schedule.length} records — Success`;
+
       chooseNextAlarm();
+      renderScheduleList();
       update();
     } catch (err) {
       console.error('Schedule download failed:', err);
@@ -3284,9 +3431,21 @@ document.addEventListener("DOMContentLoaded", function () {
       targetLabel.textContent = '--';
       remaining.textContent = '--:--:--';
       next.textContent = '';
+      scheduleList.innerHTML = '';
+
+      downloadStatus.textContent =
+        'Downloaded file: 0 records — Failure — ' +
+        (err?.message || String(err));
     }
   }
 
+  function updateAudioDebug() {
+    if (!audioContext) {
+      audioDebug.textContent = 'AudioContext: not created';
+    } else {
+      audioDebug.textContent = 'AudioContext: ' + audioContext.state;
+    }
+  }
 
   async function enableAudioFromInteraction() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -3298,6 +3457,7 @@ document.addEventListener("DOMContentLoaded", function () {
       await audioContext.resume();
     } catch (_) {}
 
+    updateAudioDebug();
   }
 
   ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(eventName => {
@@ -3307,6 +3467,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function playAlarm() {
+    updateAudioDebug();
 
     if (!audioContext || audioContext.state !== 'running') {
       console.warn('Alarm time reached, but the browser has not allowed audio yet.');
@@ -3428,6 +3589,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
+  function toggleTimerExtras() {
+    const isOpen = timerExtras.classList.toggle('show');
+    next.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  next.addEventListener('click', toggleTimerExtras);
+
+  next.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleTimerExtras();
+    }
+  });
 
 
   const failingStudentClassEls = [
@@ -3551,8 +3725,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
+  scheduleLink.addEventListener('click', event => {
+    event.preventDefault();
+  });
 
-  function showSchedulesAlert() {
+  next.addEventListener('click', () => {
     if (!schedule.length) {
       alert('No schedules are currently loaded.');
       return;
@@ -3563,15 +3740,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .join('\n');
 
     alert('Schedules\n\n' + scheduleText);
-  }
-
-  next.addEventListener('click', showSchedulesAlert);
-
-  next.addEventListener('keydown', event => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      showSchedulesAlert();
-    }
   });
 
   updateAudioDebug();
