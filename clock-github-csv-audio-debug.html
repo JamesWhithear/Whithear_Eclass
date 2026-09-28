@@ -3718,7 +3718,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   scheduleLink.addEventListener('click', event => {
     event.preventDefault();
+  });
 
+  next.addEventListener('click', () => {
     if (!schedule.length) {
       alert('No schedules are currently loaded.');
       return;
