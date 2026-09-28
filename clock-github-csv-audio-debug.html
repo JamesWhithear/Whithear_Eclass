@@ -3718,8 +3718,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   scheduleLink.addEventListener('click', event => {
     event.preventDefault();
-    const isOpen = schedulePanel.classList.toggle('show');
-    scheduleLink.setAttribute('aria-expanded', String(isOpen));
+
+    if (!schedule.length) {
+      alert('No schedules are currently loaded.');
+      return;
+    }
+
+    const scheduleText = schedule
+      .map(item => `${item.name} — ${formatMinutes(item.minutes)}`)
+      .join('\n');
+
+    alert('Schedules\n\n' + scheduleText);
   });
 
   updateAudioDebug();
